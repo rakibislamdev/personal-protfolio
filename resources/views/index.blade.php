@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="keendevs">
     <!-- ======== Page title ============ -->
-    <title>SPRUCE - Portfolio HTML Template</title>
+    <title>Rakib - Personal Protfolio</title>
     <!-- ========== Favicon Icon ========== -->
     <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}">
     <!-- ===========  All Stylesheet ================= -->
@@ -46,26 +46,6 @@
     <div id="preloader" class="preloader">
         <div class="animation-preloader">
             <div class="spinner"></div>
-            <div class="txt-loading">
-                <span data-text-preloader="S" class="letters-loading">
-                    S
-                </span>
-                <span data-text-preloader="P" class="letters-loading">
-                    P
-                </span>
-                <span data-text-preloader="R" class="letters-loading">
-                    R
-                </span>
-                <span data-text-preloader="U" class="letters-loading">
-                    U
-                </span>
-                <span data-text-preloader="C" class="letters-loading">
-                    C
-                </span>
-                <span data-text-preloader="E" class="letters-loading">
-                    E
-                </span>
-            </div>
             <p class="text-center">Loading</p>
         </div>
         <div class="loader">
@@ -91,22 +71,13 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-6">
                     <div class="logo">
-                        <a href="index.html">Spruce</a>
+                        <a href="index.html">Rakib</a>
                     </div>
                 </div>
                 <div class="col-lg-8 offset-lg-2 d-none d-lg-block text-right">
                     <div class="main-menu">
                         <ul>
-                            <li><a href="#">Home</a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="index.html">Homepage 1</a>
-                                    </li>
-                                    <li>
-                                        <a href="index-2.html">Homepage 2</a>
-                                    </li>
-                                </ul>
-                            </li>
+                            <li><a href="{{ route('home') }}">Home</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#services">services</a></li>
                             <li><a href="#resume">Resume</a></li>
@@ -174,7 +145,7 @@
                     <div class="hero-content overflow-hidden">
                         <span class="hello-tooltip wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".5s">Hi!
                             There</span>
-                        <h1 class="wow fadeInLeft" data-wow-duration="1.3s" data-wow-delay=".9s">John William</h1>
+                        <h1 class="wow fadeInLeft" data-wow-duration="1.3s" data-wow-delay=".9s">MD RAKIB</h1>
                         <div class="typed">
                             <h3 class="wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay="1.3s">I'm a <span
                                     class="profession"></span></h3>
