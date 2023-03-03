@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+// route for user side
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// route for admin side
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
