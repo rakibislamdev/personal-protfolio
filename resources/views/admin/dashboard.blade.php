@@ -1,5 +1,4 @@
 @extends('layouts.admin-layout')
-
 @section('content')
 <!-- Dashboard Ecommerce Starts -->
 <section id="dashboard-ecommerce">
@@ -759,6 +758,5 @@
         <!--/ Transaction Card -->
     </div>
 </section>
-
 <!-- Dashboard Ecommerce ends -->
 @endsection

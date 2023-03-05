@@ -1,132 +1,2076 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@php
+use App\Services\checkSettingsService;
+use App\Services\PermissionService;
+@endphp
+<html class="loading {{ get_admin_theme() }}" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
 
-        <title>Laravel</title>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="refresh"
+        content="{{ config('session.lifetime') * 1 }}; {{ url('/admin/lock-screen' . '/' . base64_encode(auth()->user()->id) . '/' . base64_encode(url()->current())) }}" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
+    <meta name="description" content="Square FX">
+    <meta name="keywords" content="Square FX">
+    <meta name="author" content="Square FX">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>{{ strtoupper(config('app.name')) }} - @yield('title') </title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ get_favicon_icon() }}">
+    @php $themeColor = get_theme_colors_forAll('admin_theme') @endphp
+    <style>
+        :root {
+            --custom-primary: <?=$themeColor->primary_color ?? 'var(--custom-primary)'?>;
+            --custom-form-color: <?=$themeColor->form_color ?? '#979fa6'?>;
+            --bs-body-color: <?=$themeColor->body_color ?? '#67748e'?>;
+        }
+    </style>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ get_favicon_icon() }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
+        rel="stylesheet">
 
-        <!-- Fonts -->
-        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/vendors/css/vendors.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/vendors/css/charts/apexcharts.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/vendors/css/extensions/toastr.min.css') }}">
+    @yield('vendor-css')
+    <!-- END: Vendor CSS-->
 
-        <!-- Styles -->
-        <style>
-            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--tw-bg-opacity: 1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-gray-100{--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.border-gray-200{--tw-border-opacity: 1;border-color:rgb(229 231 235 / var(--tw-border-opacity))}.border-t{border-top-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.text-center{text-align:center}.text-gray-200{--tw-text-opacity: 1;color:rgb(229 231 235 / var(--tw-text-opacity))}.text-gray-300{--tw-text-opacity: 1;color:rgb(209 213 219 / var(--tw-text-opacity))}.text-gray-400{--tw-text-opacity: 1;color:rgb(156 163 175 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity))}.text-gray-600{--tw-text-opacity: 1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-700{--tw-text-opacity: 1;color:rgb(55 65 81 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity: 1;color:rgb(17 24 39 / var(--tw-text-opacity))}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--tw-bg-opacity: 1;background-color:rgb(31 41 55 / var(--tw-bg-opacity))}.dark\:bg-gray-900{--tw-bg-opacity: 1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:border-gray-700{--tw-border-opacity: 1;border-color:rgb(55 65 81 / var(--tw-border-opacity))}.dark\:text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:text-gray-400{--tw-text-opacity: 1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity))}}
-        </style>
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/bootstrap-extended.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/colors.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/components.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/dark-layout.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/bordered-layout.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/themes/semi-dark-layout.css') }}">
 
-        <style>
-            body {
-                font-family: 'Nunito', sans-serif;
-            }
-        </style>
-    </head>
-    <body class="antialiased">
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-            @if (Route::has('login'))
-                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-                    @auth
-                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/pages/ui-feather.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/core/menu/menu-types/vertical-menu.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/pages/dashboard-ecommerce.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/charts/chart-apex.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/extensions/ext-component-toastr.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/extensions/ext-component-sweet-alerts.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/forms/form-validation.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/extensions/shepherd.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/extensions/shepherd.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/css/plugins/extensions/ext-component-tour.css') }}">
+    @yield('page-css')
+    <!-- END: Page CSS-->
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/assets/css/style.css') }}">
+    <!-- END: Custom CSS-->
+    <style>
+        .flag-icon {
+            margin-right: 5px;
+        }
+
+        .dataTables_info {
+            display: inline-block;
+        }
+
+        .dataTables_paginate.paging_simple_numbers {
+            display: inline-block;
+            float: right;
+            margin: .5rem !important;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+            margin-top: 0;
+        }
+
+        .data-list-page-item.dl-active {
+            background-color: var(--custom-primary);
+        }
+
+        .al-error-solve {
+            position: relative;
+        }
+
+        .al-error-solve .error-msg {
+            position: absolute;
+            bottom: -21px;
+            left: 0;
+        }
+
+        .al-input-error-fixed {
+            position: relative;
+        }
+
+        .al-input-error-fixed .error-msg {
+            position: absolute;
+            left: auto;
+            bottom: -20px;
+            z-index: 11;
+        }
+
+        /* .al-error-solve:has(> .error-msg) {
+            'margin-bottom' : '15px';
+        } */
+    </style>
+    @yield('custom-css')
+    <!-- END: Custom CSS-->
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click"
+    data-menu="vertical-menu-modern" data-col="">
+
+    <!-- BEGIN: Header-->
+    <nav
+        class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
+        <div class="navbar-container d-flex content">
+            <div class="bookmark-wrapper d-flex align-items-center">
+                <ul class="nav navbar-nav d-xl-none">
+                    <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon"
+                                data-feather="menu"></i></a></li>
+                </ul>
+                <ul class="nav navbar-nav bookmark-icons">
+                    <li class="nav-item d-none d-lg-block"><a class="nav-link" href="{{ route('admin.dashboard') }}"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home"><i class="ficon"
+                                data-feather="home"></i></a></li>
+                </ul>
+            </div>
+            <ul class="nav navbar-nav align-items-center ms-auto">
+                <li class="nav-item dropdown dropdown-language">
+                    <a class="nav-link dropdown-toggle" id="dropdown-flag" href="#" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        @if (session()->get('locale') == 'fr')
+                        @php($lang = __('language.french'))
+                        @php($flag = 'fr')
+                        @elseif(session()->get('locale') == 'de')
+                        @php($lang = __('language.german'))
+                        @php($flag = 'de')
+                        @elseif(session()->get('locale') == 'pt')
+                        @php($lang = __('language.portuguese'))
+                        @php($flag = 'pt')
+                        @elseif(session()->get('locale') == 'zh')
+                        @php($lang = __('language.chinese'))
+                        @php($flag = 'cn')
+                        @else
+                        @php($lang = __('language.english'))
+                        @php($flag = 'us')
                         @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
-                    <svg viewBox="0 0 651 192" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto text-gray-700 sm:h-20">
-                        <g clip-path="url(#clip0)" fill="#EF3B2D">
-                            <path d="M248.032 44.676h-16.466v100.23h47.394v-14.748h-30.928V44.676zM337.091 87.202c-2.101-3.341-5.083-5.965-8.949-7.875-3.865-1.909-7.756-2.864-11.669-2.864-5.062 0-9.69.931-13.89 2.792-4.201 1.861-7.804 4.417-10.811 7.661-3.007 3.246-5.347 6.993-7.016 11.239-1.672 4.249-2.506 8.713-2.506 13.389 0 4.774.834 9.26 2.506 13.459 1.669 4.202 4.009 7.925 7.016 11.169 3.007 3.246 6.609 5.799 10.811 7.66 4.199 1.861 8.828 2.792 13.89 2.792 3.913 0 7.804-.955 11.669-2.863 3.866-1.908 6.849-4.533 8.949-7.875v9.021h15.607V78.182h-15.607v9.02zm-1.431 32.503c-.955 2.578-2.291 4.821-4.009 6.73-1.719 1.91-3.795 3.437-6.229 4.582-2.435 1.146-5.133 1.718-8.091 1.718-2.96 0-5.633-.572-8.019-1.718-2.387-1.146-4.438-2.672-6.156-4.582-1.719-1.909-3.032-4.152-3.938-6.73-.909-2.577-1.36-5.298-1.36-8.161 0-2.864.451-5.585 1.36-8.162.905-2.577 2.219-4.819 3.938-6.729 1.718-1.908 3.77-3.437 6.156-4.582 2.386-1.146 5.059-1.718 8.019-1.718 2.958 0 5.656.572 8.091 1.718 2.434 1.146 4.51 2.674 6.229 4.582 1.718 1.91 3.054 4.152 4.009 6.729.953 2.577 1.432 5.298 1.432 8.162-.001 2.863-.479 5.584-1.432 8.161zM463.954 87.202c-2.101-3.341-5.083-5.965-8.949-7.875-3.865-1.909-7.756-2.864-11.669-2.864-5.062 0-9.69.931-13.89 2.792-4.201 1.861-7.804 4.417-10.811 7.661-3.007 3.246-5.347 6.993-7.016 11.239-1.672 4.249-2.506 8.713-2.506 13.389 0 4.774.834 9.26 2.506 13.459 1.669 4.202 4.009 7.925 7.016 11.169 3.007 3.246 6.609 5.799 10.811 7.66 4.199 1.861 8.828 2.792 13.89 2.792 3.913 0 7.804-.955 11.669-2.863 3.866-1.908 6.849-4.533 8.949-7.875v9.021h15.607V78.182h-15.607v9.02zm-1.432 32.503c-.955 2.578-2.291 4.821-4.009 6.73-1.719 1.91-3.795 3.437-6.229 4.582-2.435 1.146-5.133 1.718-8.091 1.718-2.96 0-5.633-.572-8.019-1.718-2.387-1.146-4.438-2.672-6.156-4.582-1.719-1.909-3.032-4.152-3.938-6.73-.909-2.577-1.36-5.298-1.36-8.161 0-2.864.451-5.585 1.36-8.162.905-2.577 2.219-4.819 3.938-6.729 1.718-1.908 3.77-3.437 6.156-4.582 2.386-1.146 5.059-1.718 8.019-1.718 2.958 0 5.656.572 8.091 1.718 2.434 1.146 4.51 2.674 6.229 4.582 1.718 1.91 3.054 4.152 4.009 6.729.953 2.577 1.432 5.298 1.432 8.162 0 2.863-.479 5.584-1.432 8.161zM650.772 44.676h-15.606v100.23h15.606V44.676zM365.013 144.906h15.607V93.538h26.776V78.182h-42.383v66.724zM542.133 78.182l-19.616 51.096-19.616-51.096h-15.808l25.617 66.724h19.614l25.617-66.724h-15.808zM591.98 76.466c-19.112 0-34.239 15.706-34.239 35.079 0 21.416 14.641 35.079 36.239 35.079 12.088 0 19.806-4.622 29.234-14.688l-10.544-8.158c-.006.008-7.958 10.449-19.832 10.449-13.802 0-19.612-11.127-19.612-16.884h51.777c2.72-22.043-11.772-40.877-33.023-40.877zm-18.713 29.28c.12-1.284 1.917-16.884 18.589-16.884 16.671 0 18.697 15.598 18.813 16.884h-37.402zM184.068 43.892c-.024-.088-.073-.165-.104-.25-.058-.157-.108-.316-.191-.46-.056-.097-.137-.176-.203-.265-.087-.117-.161-.242-.265-.345-.085-.086-.194-.148-.29-.223-.109-.085-.206-.182-.327-.252l-.002-.001-.002-.002-35.648-20.524a2.971 2.971 0 00-2.964 0l-35.647 20.522-.002.002-.002.001c-.121.07-.219.167-.327.252-.096.075-.205.138-.29.223-.103.103-.178.228-.265.345-.066.089-.147.169-.203.265-.083.144-.133.304-.191.46-.031.085-.08.162-.104.25-.067.249-.103.51-.103.776v38.979l-29.706 17.103V24.493a3 3 0 00-.103-.776c-.024-.088-.073-.165-.104-.25-.058-.157-.108-.316-.191-.46-.056-.097-.137-.176-.203-.265-.087-.117-.161-.242-.265-.345-.085-.086-.194-.148-.29-.223-.109-.085-.206-.182-.327-.252l-.002-.001-.002-.002L40.098 1.396a2.971 2.971 0 00-2.964 0L1.487 21.919l-.002.002-.002.001c-.121.07-.219.167-.327.252-.096.075-.205.138-.29.223-.103.103-.178.228-.265.345-.066.089-.147.169-.203.265-.083.144-.133.304-.191.46-.031.085-.08.162-.104.25-.067.249-.103.51-.103.776v122.09c0 1.063.568 2.044 1.489 2.575l71.293 41.045c.156.089.324.143.49.202.078.028.15.074.23.095a2.98 2.98 0 001.524 0c.069-.018.132-.059.2-.083.176-.061.354-.119.519-.214l71.293-41.045a2.971 2.971 0 001.489-2.575v-38.979l34.158-19.666a2.971 2.971 0 001.489-2.575V44.666a3.075 3.075 0 00-.106-.774zM74.255 143.167l-29.648-16.779 31.136-17.926.001-.001 34.164-19.669 29.674 17.084-21.772 12.428-43.555 24.863zm68.329-76.259v33.841l-12.475-7.182-17.231-9.92V49.806l12.475 7.182 17.231 9.92zm2.97-39.335l29.693 17.095-29.693 17.095-29.693-17.095 29.693-17.095zM54.06 114.089l-12.475 7.182V46.733l17.231-9.92 12.475-7.182v74.537l-17.231 9.921zM38.614 7.398l29.693 17.095-29.693 17.095L8.921 24.493 38.614 7.398zM5.938 29.632l12.475 7.182 17.231 9.92v79.676l.001.005-.001.006c0 .114.032.221.045.333.017.146.021.294.059.434l.002.007c.032.117.094.222.14.334.051.124.088.255.156.371a.036.036 0 00.004.009c.061.105.149.191.222.288.081.105.149.22.244.314l.008.01c.084.083.19.142.284.215.106.083.202.178.32.247l.013.005.011.008 34.139 19.321v34.175L5.939 144.867V29.632h-.001zm136.646 115.235l-65.352 37.625V148.31l48.399-27.628 16.953-9.677v33.862zm35.646-61.22l-29.706 17.102V66.908l17.231-9.92 12.475-7.182v33.841z"/>
-                        </g>
-                    </svg>
-                </div>
-
-                <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
-                    <div class="grid grid-cols-1 md:grid-cols-2">
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel.com/docs" class="underline text-gray-900 dark:text-white">Documentation</a></div>
-                            </div>
-
-                            <div class="ml-12">
-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    Laravel has wonderful, thorough documentation covering every aspect of the framework. Whether you are new to the framework or have previous experience with Laravel, we recommend reading all of the documentation from beginning to end.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500"><path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" /></svg>
-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laracasts.com" class="underline text-gray-900 dark:text-white">Laracasts</a></div>
-                            </div>
-
-                            <div class="ml-12">
-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" /></svg>
-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="https://laravel-news.com/" class="underline text-gray-900 dark:text-white">Laravel News</a></div>
-                            </div>
-
-                            <div class="ml-12">
-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-l">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" /></svg>
-                                <div class="ml-4 text-lg leading-7 font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</div>
-                            </div>
-
-                            <div class="ml-12">
-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline">Forge</a>, <a href="https://vapor.laravel.com" class="underline">Vapor</a>, <a href="https://nova.laravel.com" class="underline">Nova</a>, and <a href="https://envoyer.io" class="underline">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline">Telescope</a>, and more.
-                                </div>
-                            </div>
-                        </div>
+                        <i class="flag-icon flag-icon-{{ $flag }}"></i>
+                        <span class="selected-language">
+                            {{ $lang }}
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-flag">
+                        <a class="dropdown-item lang-change" href="#" data-language="en"><i
+                                class="flag-icon flag-icon-us"></i>{{ __('language.english') }}</a>
+                        <a class="dropdown-item lang-change" href="#" data-language="fr"><i
+                                class="flag-icon flag-icon-fr"></i> {{ __('language.french') }}</a>
+                        <a class="dropdown-item lang-change" href="#" data-language="de"><i
+                                class="flag-icon flag-icon-de"></i> {{ __('language.german') }}</a>
+                        <a class="dropdown-item lang-change" href="#" data-language="pt"><i
+                                class="flag-icon flag-icon-pt"></i> {{ __('language.portuguese') }}</a>
+                        <a class="dropdown-item lang-change" href="#" data-language="zh"><i
+                                class="flag-icon flag-icon-cn"></i> {{ __('language.chinese') }}</a>
                     </div>
-                </div>
+                </li>
+                <!--<li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-style"><i class="ficon"-->
+                <!--            data-feather="moon"></i></a></li>-->
+                <li class="nav-item nav-search"><a class="nav-link nav-link-search"><i class="ficon"
+                            data-feather="search"></i></a>
+                    <div class="search-input">
+                        <div class="search-input-icon"><i data-feather="search"></i></div>
+                        <input class="form-control input" type="text" placeholder="Search the menue" tabindex="-1"
+                            data-search="menu">
+                        <div class="search-input-close"><i data-feather="x"></i></div>
+                        <ul class="search-list search-list-main"></ul>
+                    </div>
+                </li>
+                <li class="nav-item dropdown dropdown-notification me-25"><a class="nav-link" href="#"
+                        data-bs-toggle="dropdown"><i class="ficon" data-feather="bell"></i><span id="notiBel"
+                            class="badge rounded-pill bg-danger badge-up"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
+                        <li class="dropdown-menu-header">
+                            <div class="dropdown-header d-flex">
+                                <h4 class="notification-title mb-0 me-auto">Notifications</h4>
+                                <div class="badge rounded-pill badge-light-primary"><span id="notiBelBottom"></span>
+                                    New</div>
+                            </div>
+                        </li>
+                        <li class="scrollable-container media-list">
 
-                <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
-                    <div class="text-center text-sm text-gray-500 sm:text-left">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-mt-px w-5 h-5 text-gray-400">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                            </svg>
 
-                            <a href="https://laravel.bigcartel.com" class="ml-1 underline">
-                                Shop
+                            <div class="list-item d-flex align-items-center">
+                                <h6 class="fw-bolder me-auto mb-0">System Notifications</h6>
+                                <div class="form-check form-check-primary form-switch">
+                                    <input class="form-check-input" id="systemNotification" type="checkbox" checked="">
+                                    <label class="form-check-label" for="systemNotification"></label>
+                                </div>
+                            </div><a class="d-flex" href="#">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-danger">
+                                            <div class="avatar-content"><i class="avatar-icon" data-feather="x"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Server
+                                                down</span>&nbsp;registered</p><small class="notification-text"> USA
+                                            Server is down due to high CPU usage</small>
+                                    </div>
+                                </div>
                             </a>
 
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-4 -mt-px w-5 h-5 text-gray-400">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-
-                            <a href="https://github.com/sponsors/taylorotwell" class="ml-1 underline">
-                                Sponsor
+                            <a class="d-flex" href="#">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-success">
+                                            <div class="avatar-content"><i class="avatar-icon" data-feather="check"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Sales
+                                                report</span>&nbsp;generated</p><small class="notification-text"> Last
+                                            month sales report generated</small>
+                                    </div>
+                                </div>
                             </a>
-                        </div>
-                    </div>
+                            <?php
 
-                    <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                            use App\Services\NotificationService;
+
+                            $obj = new NotificationService();
+                            $notification = $obj->system_notification();
+                            $count = 0;
+
+                            ?>
+                            {{-- Software Settings Notification --}}
+                            @if ($notification['software_settings'] != '')
+                            @if ($notification['software_settings']['crm_type'] == null or
+                            $notification['software_settings']['platform_book'] == null or
+                            $notification['software_settings']['create_meta_acc'] == null or
+                            $notification['software_settings']['platform_book'] == null or
+                            $notification['software_settings']['acc_limit'] == null or
+                            $notification['software_settings']['brute_force_attack'] == null)
+                            <a class="d-flex" href="/admin/settings/software_setting">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Please Update Your
+                                                Software Settings</p><small class="notification-text">You need
+                                            to
+                                            update</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+
+                            {{-- SMTP Settings Notification --}}
+                            @if ($notification['software_settings']['mail_driver'] == null or
+                            $notification['software_settings']['host'] == null or
+                            $notification['software_settings']['port'] == null or
+                            $notification['software_settings']['mail_user'] == null or
+                            $notification['software_settings']['mail_password'] == null or
+                            $notification['software_settings']['mail_encryption'] == null)
+                            <a class="d-flex" href="/admin/settings/smtp_setup">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Please Update Your
+                                                SMTP
+                                                Settings</p><small class="notification-text">You need to
+                                            update</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+
+
+                            {{-- Company Setup notification --}}
+                            @if ($notification['software_settings']['com_name'] == null or
+                            $notification['software_settings']['com_email'] == null or
+                            $notification['software_settings']['com_phone'] == null or
+                            $notification['software_settings']['com_license'] == null or
+                            $notification['software_settings']['com_website'] == null or
+                            $notification['software_settings']['com_address'] == null or
+                            $notification['software_settings']['com_authority'] == null or
+                            $notification['software_settings']['com_social_info'] == null or
+                            $notification['software_settings']['copyright'] == null or
+                            $notification['software_settings']['support_email'] == null or
+                            $notification['software_settings']['auto_email'] == null)
+                            <a class="d-flex" href="/admin/settings/company_setup">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Please Update Your
+                                                Company Setup </p><small class="notification-text">You need to
+                                            update</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- API Configuration Notification --}}
+                            @if ($notification['software_settings']['platform_type'] == null or
+                            $notification['software_settings']['server_type'] == null or
+                            $notification['software_settings']['platform_download_link'] == null or
+                            $notification['software_settings']['server_ip'] == null or
+                            $notification['software_settings']['manager_login'] == null or
+                            $notification['software_settings']['manager_password'] == null or
+                            $notification['software_settings']['api_password'] == null)
+                            <a class="d-flex" href="/admin/settings/api_configuration">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Please Update Your
+                                                API
+                                                Configuration </p><small class="notification-text">You need to
+                                            update</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            @endif
+                            {{-- Crypto Address Settings --}}
+                            @if (!isset($notification['CryptoAddress']))
+                            <a class="d-flex" href="/admin/settings/crypto_deposit_settings">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Add Crypto address</p>
+                                        <small class="notification-text">You need add to crypto address</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- Currency Pair Settings --}}
+                            @if (!isset($notification['Symbol']))
+                            <a class="d-flex" href="/admin/settings/currency-pair">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Add Currency Pair</p>
+                                        <small class="notification-text">You need add to currency pair</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- IB Settings --}}
+                            @if (!isset($notification['IbSetting']))
+                            <a class="d-flex" href="/admin/settings/ib_setting">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Add New IB</p><small
+                                            class="notification-text">You need add IB Setting</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- IB Setup --}}
+                            @if (!isset($notification['IbSetup']))
+                            <a class="d-flex" href="/admin/ib-management/ib-setup">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Setup Your Ib</p><small
+                                            class="notification-text">You need Ib setup</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- IB Commission structure Setup --}}
+                            @if (!isset($notification['IbCommissionStructure']))
+                            <a class="d-flex" href="/admin/ib-management/ib-commission-structure">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">IB Commission Structure
+                                                Add</p><small class="notification-text">You need to Ib commission
+                                            structure add</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- Trader Setting --}}
+                            @if (!isset($notification['TraderSetting']))
+                            <a class="d-flex" href="/admin/ib-management/ib-commission-structure">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Add New Trader</p><small
+                                            class="notification-text">You need add to trader setting</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+                            {{-- Finance Setting --}}
+                            @if (!isset($notification['TransactionSetting']))
+                            <a class="d-flex" href="/admin/settings/finance_setting">
+                                <div class="list-item d-flex align-items-start">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-warning">
+                                            <div class="avatar-content"><i class="avatar-icon"
+                                                    data-feather="alert-triangle"></i></div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    $count = $count + 1;
+                                    ?>
+                                    <div class="list-item-body flex-grow-1">
+                                        <p class="media-heading"><span class="fw-bolder">Add New Finance</p><small
+                                            class="notification-text">You need add to first finance setting</small>
+                                    </div>
+                                </div>
+                            </a>
+                            @endif
+
+                            <span id="notiCount" class="d-none">{{ $count }}</span>
+
+
+
+                        </li>
+                        <li class="dropdown-menu-footer"><a class="btn btn-primary w-100"
+                                href="{{ route('admin.allNotification.allNotification') }}">Read all
+                                notifications</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown dropdown-user">
+                    <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="user-nav d-sm-flex d-none">
+                            <span class="user-name fw-bolder">{{ __('admin-menue-left.it_corner') }}</span>
+                            <span class="user-status">{{ __('admin-menue-left.' . auth()->user()->type) }}</span>
+                        </div>
+                        <span class="avatar">
+                            <img class="round bg-gradient-primary" src="{{ asset(avatar()) }}" alt="avatar" height="40"
+                                width="40">
+                            <span class="avatar-status-online"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
+                        <a class="dropdown-item" href="{{ route('admin.profile-settings') }}">
+                            <i class="me-50" data-feather="user"></i>
+                            Profile
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                                class="me-50" data-feather="power"></i> Logout</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <ul class="main-search-list-defaultlist d-none">
+        <li class="d-flex align-items-center"><a href="#">
+                <h6 class="section-label mt-75 mb-0">Files</h6>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100"
+                href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src="{{ asset('admin-assets/app-assets/images/icons/xls.png') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Two new item submitted</p><small class="text-muted">Marketing
+                            Manager</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;17kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100"
+                href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src="{{ asset('admin-assets/app-assets/images/icons/jpg.png') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">52 JPG file Generated</p><small class="text-muted">FontEnd
+                            Developer</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;11kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100"
+                href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src="{{ asset('admin-assets/app-assets/images/icons/pdf.png') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">25 PDF File Uploaded</p><small class="text-muted">Digital
+                            Marketing Manager</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;150kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100"
+                href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src="{{ asset('admin-assets/app-assets/images/icons/doc.png') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Anna_Strong.doc</p><small class="text-muted">Web
+                            Designer</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;256kb</small>
+            </a></li>
+        <li class="d-flex align-items-center"><a href="#">
+                <h6 class="section-label mt-75 mb-0">Members</h6>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100"
+                href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img
+                            src="{{ asset('admin-assets/app-assets/images/portrait/small/avatar-s-8.jpg') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">John Doe</p><small class="text-muted">UI
+                            designer</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100"
+                href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img
+                            src="{{ asset('admin-assets/app-assets/images/portrait/small/avatar-s-1.jpg') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Michal Clark</p><small class="text-muted">FontEnd
+                            Developer</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100"
+                href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img
+                            src="{{ asset('admin-assets/app-assets/images/portrait/small/avatar-s-14.jpg') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Milena Gibson</p><small class="text-muted">Digital
+                            Marketing Manager</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100"
+                href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img
+                            src="{{ asset('admin-assets/app-assets/images/portrait/small/avatar-s-6.jpg') }}" alt="png"
+                            height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Anna Strong</p><small class="text-muted">Web
+                            Designer</small>
+                    </div>
+                </div>
+            </a></li>
+    </ul>
+    <ul class="main-search-list-defaultlist-other-list d-none">
+        <li class="auto-suggestion justify-content-between"><a
+                class="d-flex align-items-center justify-content-between w-100 py-50">
+                <div class="d-flex justify-content-start"><span class="me-75"
+                        data-feather="alert-circle"></span><span>No results found.</span></div>
+            </a></li>
+    </ul>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+    <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav flex-row">
+                <li class="nav-item me-auto" style="width:76%">
+                    <a class="navbar-brand" href="#">
+                        <span class="brand-logo">
+                            <img class="img img-fluid" src="{{ get_admin_logo() }}" alt="{{ config('app.name') }}"
+                                style="max-width:100%">
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pe-0" data-bs-toggle="collapse"><i
+                            class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i><i
+                            class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary"
+                            data-feather="disc" data-ticon="disc"></i></a></li>
+            </ul>
+        </div>
+        <div class="shadow-bottom"></div>
+        <div class="main-menu-content">
+            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+                <li class="{{ Request::is('admin/dashboard') ? 'active' : '' }}" id="mainMenuLi">
+                    <a class="d-flex align-items-center" href="{{ route('admin.dashboard') }}">
+                        <i data-feather="home"></i>
+                        <span class="menu-item text-truncate" data-i18n="Configuration">{{ __('page.dashboard')
+                            }}</span>
+                    </a>
+                </li>
+                <!-- Admin profile -->
+                @if (PermissionService::has_permission('admin_profile','admin'))
+                @role('admin profile')
+                <li class=" nav-item">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='user-check'></i>
+                        <span class="menu-title text-truncate" data-i18n="Admin-Profile">{{ __('page.admin_profile')
+                            }}</span>
+                        <!-- <span class="badge badge-light-warning rounded-pill ms-auto me-1">1</span> -->
+                        <span id="notiDashboard" class="badge badge-light-warning rounded-pill ms-auto me-1"></span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- profile change -->
+                        @if (PermissionService::has_permission('change_profile','admin'))
+                        @role('change profile')
+                        <li class="{{ Request::is('admin/profile/*') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.profile-settings') }}"><i
+                                    data-feather="circle"></i><span class="menu-item text-truncate"
+                                    data-i18n="Admin-Profile">{{ __('page.change_profile') }}</span></a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- notifiction -->
+                        @if (PermissionService::has_permission('notification','admin'))
+                        <li class="{{ Request::is('admin/allNotification/allNotification*') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.allNotification.allNotification') }}">
+                                <i data-feather="bell"></i>
+                                <span class="menu-item text-truncate" data-i18n="eCommerce">{{ __('page.notifications')
+                                    }} &nbsp;
+                                    <span class="badge badge-light-warning rounded-pill ms-auto me-1"
+                                        id="allNotification"></span>
+                                </span>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!--Social Trade-->
+                @if (PermissionService::has_permission('social_trade','admin'))
+                @role('social trade')
+                <li class="nav-item {{ Request::is('admin/pamm/*') ? 'active' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='user-check'></i>
+                        <span class="menu-title text-truncate" data-i18n="Admin-Profile">{{
+                            __('admin-menue-left.social_trade') }}</span>
+                        <span id="notiDashboard" class="badge badge-light-warning rounded-pill ms-auto me-1"></span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- social trade -->
+                        @if (PermissionService::has_permission('social_dashboard','admin'))
+                        @role('social dashboard')
+                        <li class="{{ Request::is('admin/pamm/copy-dashboard') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.pamm.copy-dashboard') }}">
+                                <i data-feather="circle"></i><span class="menu-item text-truncate"
+                                    data-i18n="Admin-Profile">Dashboard
+                                </span></a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- pamm settings -->
+                        @if (PermissionService::has_permission('pamm_settings','admin'))
+                        @role('pamm settings')
+                        <li class="{{ Request::is('admin/pamm/pamm-settings') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.pamm') }}">
+                                <i data-feather="circle"></i><span class="menu-item text-truncate"
+                                    data-i18n="Admin-Profile">{{ __('admin-menue-left.pamm_setting') }}
+                                </span></a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- pamm manager -->
+                        @if (PermissionService::has_permission('pamm_manager','admin'))
+                        @role('pamm manager')
+                        <li class="{{ Request::is('admin/pamm/pamm-manager') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.manager.pamm') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">{{
+                                    __('admin-menue-left.pamm_manager') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- copy trades report -->
+                        @if (PermissionService::has_permission('copy_trades_report','admin'))
+                        @role('copy trades report')
+                        <li class="{{ Request::is('admin/pamm/copy-trades-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.pamm.copy-trade-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="copy">{{
+                                    __('admin-menue-left.copy_trades_report') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- social trade activiy reports -->
+                        @if (PermissionService::has_permission('social_trades_activity_reports','admin'))
+                        @role('social trades activity report')
+                        <li class="{{ Request::is('admin/pamm/social-trades-ativity-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.social-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">{{
+                                    __('admin-menue-left.social_trades_report') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- manage mamm -->
+                        @if (PermissionService::has_permission('manage_mamm','admin'))
+                        @role('manage mamm')
+                        <li class="{{ Request::is('admin/pamm/social-trades/manage-mam') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.mamm.manage') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="manage">{{
+                                    __('admin-menue-left.manage_mamm') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- Client management -->
+                @if (PermissionService::has_permission('manage_client','admin'))
+                @role('manage client')
+                <li class=" nav-item {{ Request::is('admin/client-management/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="users"></i>
+                        <span class="menu-title text-truncate" data-i18n="Manage Client">{{
+                            __('admin-menue-left.client_management') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- trader admin -->
+                        @if (PermissionService::has_permission('trader_admin','admin'))
+                        @role('trader admin')
+                        <li class="{{ Request::is('admin/client-management/trader-admin') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.trader-admin') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">{{
+                                    __('admin-menue-left.trader_admin') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- manage trade -->
+                @if (PermissionService::has_permission('manage_trade','admin'))
+                @role('manage trade')
+                <li class=" nav-item {{ Request::is('admin/manage-trade/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="users"></i>
+                        <span class="menu-title text-truncate" data-i18n="Manage Trade">{{
+                            __('admin-menue-left.manage_trade') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- trading report -->
+                        @if (PermissionService::has_permission('trading_report','admin'))
+                        @role('trading trade report')
+                        <li class="{{ Request::is('admin/manage-trade/trading-trade-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.trading-trade-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">{{
+                                    __('admin-menue-left.trading_report') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- trade commission -->
+                        @if (PermissionService::has_permission('trade_commission','admin'))
+                        @role('trade commission status')
+                        <li class="{{ Request::is('admin/manage-trade/trade-commission-status') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.trade-commission-status') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">{{
+                                    __('admin-menue-left.trade_commission_status') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- ADMIN: Management -->
+                @if (PermissionService::has_permission('manage_admin','admin'))
+                @role('manage admin')
+                <li class=" nav-item {{ Request::is('admin/admin-management/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="users"></i>
+                        <span class="menu-title text-truncate" data-i18n="Admin Management">{{
+                            __('admin-menue-left.admin_management') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- admin group -->
+                        @if (PermissionService::has_permission('admin_groups','admin'))
+                        @role('admin groups')
+                        <li class="{{ Request::is('admin/admin-management/admin-groups') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.admin-groups') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Admin Groups">{{
+                                    __('admin-menue-left.admin_groups') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- admin registration -->
+                        @if (PermissionService::has_permission('admin_registration','admin'))
+                        @role('admin registration')
+                        <li class="{{ Request::is('admin/admin-management/admin-registration') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.admin-registration') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Admin Registration">{{
+                                    __('admin-menue-left.admin_registration') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- admin right management -->
+                        @if (PermissionService::has_permission('admin_right_management','admin'))
+                        @role('admin right management')
+                        <li class="{{ Request::is('admin/admin-management/roles') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.roles') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Admin Right Management">{{
+                                    __('admin-menue-left.admin_right') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- START: Manager settings -->
+                @if (PermissionService::has_permission('manager_settings','admin'))
+                @role('manager settings')
+                <li class=" nav-item {{ Request::is('admin/manager-settings/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="users"></i>
+                        <span class="menu-title text-truncate" data-i18n="Manager Settings">{{
+                            __('admin-menue-left.manager_settings') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- manager groups -->
+                        @if (PermissionService::has_permission('manager_groups','admin'))
+                        @role('manager groups')
+                        <li class="{{ Request::is('admin/manager-settings/manager-group') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.manager-groups') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Manager Groups">{{
+                                    __('admin-menue-left.manager_groups') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- add manager -->
+                        @if (PermissionService::has_permission('add_manager','admin'))
+                        @role('add manager')
+                        <li class="{{ Request::is('admin/manager-settings/add-manager') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.add-manager') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Add Manager">{{
+                                    __('admin-menue-left.add_manager') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- manager list -->
+                        @if (PermissionService::has_permission('manager_list','admin'))
+                        @role('manager list')
+                        <li class="{{ Request::is('admin/manager-settings/get-manager') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.get-manager') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Manager List">{{
+                                    __('admin-menue-left.manager_list') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- manager right -->
+                        @if (PermissionService::has_permission('manager_right','admin'))
+                        @role('manager right')
+                        <li class="{{ Request::is('admin/manager-settings/manager-right') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.all-manager-with-right') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Manager Right">{{
+                                    __('admin-menue-left.manager_right') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- manager analysis -->
+                        @if (PermissionService::has_permission('manager_analysis','admin'))
+                        @role('manager analysis')
+                        <li class="{{ Request::is('admin/manager-settings/manager-analysis') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.manager-analysis-view') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Manager Analysis">{{
+                                    __('admin-menue-left.manager_analysis') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- END: manager settings -->
+                <!-- START: manage accounts -->
+                @if (PermissionService::has_permission('manage_accounts','admin'))
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#">
+                        <i data-feather="grid"></i>
+                        <span class="menu-title text-truncate" data-i18n="Manage Accounts">
+                            {{ __('admin-menue-left.Manage_Accounts') }}
+                        </span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- live trading account -->
+                        @if (PermissionService::has_permission('live_trading_account','admin'))
+                        <li class="{{ Request::is('admin/trading-account-details-live') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/trading-account-details-live') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Live Trading Account List">
+                                    {{ __('admin-menue-left.Live_Trading_Account_List') }} </span>
+                            </a>
+                        </li>
+                        @endif
+                        @if (PermissionService::has_permission('demo_trading_account','admin'))
+                        <!-- demo trading account -->
+                        <li class="{{ Request::is('admin/trading-account-details-demo') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/trading-account-details-demo') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Demo Trading Account List">
+                                    {{ __('admin-menue-left.Demo_Trading_Account_List') }} </span>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </li>
+                @endif
+                <!-- END: manage accounts -->
+                <!-- START: manage bank accounts -->
+                @if (PermissionService::has_permission('manage_banks','admin'))
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#">
+                        <i data-feather="grid"></i>
+                        <span class="menu-title text-truncate" data-i18n="Manage Banks">
+                            {{ __('admin-menue-left.Manage_Banks') }}
+                        </span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- bank account list -->
+                        @if (PermissionService::has_permission('bank_account_list','admin'))
+                        @role('bank account list')
+                        <li class="{{ Request::is('admin/manage_banks/bank_account_list') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.manage_banks.bank_account_list') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Bank Account List">
+                                    {{ __('admin-menue-left.Bank_Account_List') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endif
+                <!-- END: manage bank accounts -->
+                <!-- START: Finance -->
+                @if (PermissionService::has_permission('finance','admin'))
+                @role('finance')
+                <li class=" nav-item {{ Request::is('admin/finance/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='dollar-sign'></i>
+                        <span class="menu-title text-truncate" data-i18n="Finance">{{ __('admin-menue-left.finance')
+                            }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- balance management -->
+                        @if (PermissionService::has_permission('balance_management','admin'))
+                        @role('balance management')
+                        <li class="{{ Request::is('admin/finance/balance-management') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.finance-balance') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Balance Management">{{
+                                    __('admin-menue-left.balance_management') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- credit management -->
+                        @if (PermissionService::has_permission('credit_management','admin'))
+                        @role('credit management')
+                        <li class="{{ Request::is('admin/finance/credit-management') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.finance-credit') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Credit Management">{{
+                                    __('admin-menue-left.credit_management') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- finance reports -->
+                        @if (PermissionService::has_permission('fund_management','admin'))
+                        @role('fund management')
+                        <li class="{{ Request::is('admin/finance/fund-management') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.finance-fund-management') }}">
+                                <i data-feather="circle"></i><span class="menu-item text-truncate"
+                                    data-i18n="Fund Management">{{ __('admin-menue-left.fund_management') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- finance reports -->
+                        @if (PermissionService::has_permission('finance_reports','admin'))
+                        @role('finance report')
+                        <li class="{{ Request::is('admin/finance/finance-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.finance-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Finance Reports">{{
+                                    __('admin-menue-left.finance_reports') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- END: finance -->
+
+                <!-- START: Support -->
+                @if (PermissionService::has_permission('support','admin'))
+                @role('support')
+                <li class=" nav-item {{ Request::is('admin/support/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='mail'></i>
+                        <span class="menu-title text-truncate" data-i18n="support">{{ __('admin-menue-left.support')
+                            }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- client supports -->
+                        @if (PermissionService::has_permission('support_tickets','admin'))
+                        @role('client ticket')
+                        <li class="{{ Request::is('admin/support/support-ticket') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.support.support-ticket') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Balance Management">{{
+                                    __('admin-menue-left.client_tickets') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- END: Support -->
+
+                <!-- Categor Manager -->
+                @if (PermissionService::has_permission('category_manager','admin'))
+                @role('category manager')
+                <li class="nav-item  {{ Request::is('admin/categories') ? 'active' : '' }}">
+                    <a class="d-flex align-items-center" href="{{ url('admin/categories') }}">
+                        <i data-feather='layers'></i>
+                        <span class="menu-title text-truncate" data-i18n="Category Manager">{{
+                            __('admin-menue-left.category_manger') }}</span>
+                    </a>
+                </li>
+                @endrole
+                @endif
+                <!-- IB Management Nav -->
+                @if (PermissionService::has_permission('ib_management','admin'))
+                @role('ib management')
+                <li class=" nav-item {{ Request::is('admin/ib-management/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='package'></i>
+                        <span class="menu-title text-truncate" data-i18n="IB Management">{{
+                            __('admin-menue-left.ib_management') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- ib setup -->
+                        @if (PermissionService::has_permission('ib_setup','admin'))
+                        @role('ib setup')
+                        <li class="{{ Request::is('admin/ib-management/ib-setup') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-setup-view') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Setup">{{
+                                    __('admin-menue-left.ib_setup') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib commission structure -->
+                        @if (PermissionService::has_permission('ib_commission_structure','admin'))
+                        @role('ib commission structure')
+                        <li class="{{ Request::is('admin/ib-management/ib-commission-structure') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-commission-structure') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Commission Structure">{{
+                                    __('admin-menue-left.ib_commission_structure') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib tree -->
+                        @if (PermissionService::has_permission('ib_tree','admin'))
+                        @role('ib tree')
+                        <li class="{{ Request::is('admin/ib-management/ib-tree') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-tree') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Tree">{{
+                                    __('admin-menue-left.ib_tree') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- master ib -->
+                        @if (PermissionService::has_permission('master_ib','admin'))
+                        @role('master ib')
+                        <li class="{{ Request::is('admin/ib_management/master_ib_report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.ib_management.master_ib_report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Master IB">
+                                    {{ __('admin-menue-left.Master_IB') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- pending commission -->
+                        @if (PermissionService::has_permission('pending_commission_list','admin'))
+                        @role('panding commission list')
+                        <li class="{{ Request::is('admin/ib_management/pending_commission_list') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.ib_management.pending_commission_list') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Pending Commission List">
+                                    {{ __('admin-menue-left.Pending_Commission_List') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- no commission list -->
+                        @if (PermissionService::has_permission('no_commission_list','admin'))
+                        @role('no commission list')
+                        <li class="{{ Request::is('admin/ib_management/no_commission_list') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.ib_management.no_commission_list') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="No Commission List">
+                                    {{ __('admin-menue-left.No_Commission_List') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib chain -->
+                        @if (PermissionService::has_permission('ib_chain','admin'))
+                        @role('ib-chain')
+                        <li class="{{ Request::is('admin/ib-management/ib-chain') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib_management.ib_chain') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Chain">
+                                    {{ __('admin-menue-left.IB_Chain') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib admin -->
+                        @if (PermissionService::has_permission('ib_admin','admin'))
+                        @role('ib admin')
+                        <li class="{{ Request::is('admin/ib-management/ib-admin-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('ib.admin.report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Admin">{{
+                                    __('admin-menue-left.ib_admin') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib verification request -->
+                        @if (PermissionService::has_permission('ib_verification_request','admin'))
+                        @role('ib verification request')
+                        <li class="{{ Request::is('admin/ib-management/ib-verification-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center"
+                                href="{{ route('admin.verification.request-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Verification Request">{{
+                                    __('admin-menue-left.ib_verification_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib analysis -->
+                        @if (PermissionService::has_permission('ib_analysis','admin'))
+                        @role('ib analysis')
+                        <li class="{{ Request::is('admin/ib-management/ib-analysis') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-analysis') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Verification Analysis">{{
+                                    __('admin-menue-left.ib_analysis') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- Settings Nav -->
+                @if (PermissionService::has_permission('settings','admin'))
+                @role('settings')
+                <li class=" nav-item {{ Request::is('admin/settings/*') ? 'open' : '' }}" id="left_setting_menu">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="settings"></i>
+                        <span class="menu-title text-truncate" data-i18n="Settings">{{ __('admin-menue-left.settings')
+                            }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- crypto address -->
+                        @if (PermissionService::has_permission('add_crypto_address','admin'))
+                        @role('add crypto address')
+                        <li class="{{ Request::is('admin/settings/crypto_deposit_settings') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="crypto_deposit_setting"
+                                href="{{ route('admin.settings.crypto_deposit_settings') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Add Crypto Address">
+                                    {{ __('admin-menue-left.Add_Crypto_Address') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- announcement setting -->
+                        @if (PermissionService::has_permission('announcement','admin'))
+                        @role('announcement')
+                        <li class="{{ Request::is('admin/settings/announcement') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="announcement"
+                                href="{{ route('admin.settings.announcement') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Announcement">
+                                    {{ __('admin-menue-left.announcement') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- api configurations -->
+                        @if (PermissionService::has_permission('api_configuration','admin'))
+                        @role('api configuration')
+                        <li class="{{ Request::is('admin/settings/api_configuration') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="api_configuration"
+                                href="{{ route('admin.settings.api_configuration') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="API Configuration">
+                                    {{ __('admin-menue-left.API_Configuration') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- admin bank setup -->
+                        @if (PermissionService::has_permission('bank_setting','admin'))
+                        @role('bank setting')
+                        <li class="{{ Request::is('admin/settings/bank-account-setup') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="smtp_setup"
+                                href="{{ route('admin.bank-account-setup') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="SMTP Setup">
+                                    {{ __('admin-menue-left.Bank_Setting') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- banner setting -->
+                        @if (PermissionService::has_permission('banner_setup','admin'))
+                        @role('banner setup')
+                        <li class="{{ Request::is('admin/settings/banner-setup') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.banner-setup') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Banner Setup">{{
+                                    __('admin-menue-left.banner_setup') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- company setup -->
+                        @if (PermissionService::has_permission('company_setup','admin'))
+                        @role('company setup')
+                        <li class="{{ Request::is('admin/settings/company_setup') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="company_setup"
+                                href="{{ route('admin.settings.company_setup') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Company Setup">
+                                    {{ __('admin-menue-left.Company_Setup') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- currency pair setting -->
+                        @if (PermissionService::has_permission('currency_pair','admin'))
+                        @role('currency pair')
+                        <li class="{{ Request::is('admin/settings/currency-pair') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="currency-pair"
+                                href="{{ route('admin.settings.currency-pair') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Currency Pair">{{
+                                    __('admin-menue-left.currency_pair') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- finance setting -->
+                        @if (PermissionService::has_permission('finance_settings','admin'))
+                        @role('finance settings')
+                        <li class="{{ Request::is('admin/settings/finance_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="finance_setting"
+                                href="{{ route('admin.settings.finance_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Finance Settings">
+                                    {{ __('admin-menue-left.Finance_Settings') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib settings -->
+                        @if (PermissionService::has_permission('ib_settings','admin'))
+                        @role('ib setting')
+                        <li class="{{ Request::is('admin/settings/ib_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="ib_setting"
+                                href="{{ route('admin.settings.ib_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Setting">
+                                    {{ __('admin-menue-left.IB_Setting') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- notification setting -->
+                        @if (PermissionService::has_permission('notification_settings','admin'))
+                        @role('notification setting')
+                        <li class="{{ Request::is('admin/settings/notification_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="notification_setting"
+                                href="{{ route('admin.settings.notification_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Notification Setting">
+                                    {{ __('admin-menue-left.Notification_Setting') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- security settings -->
+                        @if (PermissionService::has_permission('security_settings','admin'))
+                        @role('security setting')
+
+                        <li class="{{ Request::is('admin/settings/security_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="security_setting"
+                                href="{{ route('admin.settings.security_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Security Setting">
+                                    {{ __('admin-menue-left.Security_Setting') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- smtp setup -->
+                        @if (PermissionService::has_permission('smtp_setup','admin'))
+                        @role('smtp setup')
+                        <li class="{{ Request::is('admin/settings/smtp_setup') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="smtp_setup"
+                                href="{{ route('admin.settings.smtp_setup') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="SMTP Setup">
+                                    {{ __('admin-menue-left.SMTP_Setup') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- software setting -->
+                        @if (PermissionService::has_permission('software_settings','admin'))
+                        @role('software settings')
+                        <li class="{{ Request::is('admin/settings/software_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="software_setting"
+                                href="{{ route('admin.settings.software_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Software Settings">
+                                    {{ __('admin-menue-left.Software_Settings') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- trader settings -->
+                        @if (PermissionService::has_permission('trader_settings','admin'))
+                        @role('trader setting')
+                        <li class="{{ Request::is('admin/settings/trader_setting') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" id="trader_setting"
+                                href="{{ route('admin.settings.trader_setting') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Trader Setting">
+                                    {{ __('admin-menue-left.Trader_Setting') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- Start: KYC Managemnt -->
+                @if (PermissionService::has_permission('kyc_management','admin'))
+                @role('kyc management')
+                <li class=" nav-item {{ Request::is('admin/kyc-management/*') ? 'open' : '' }} ">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='archive'></i>
+                        <span class="menu-title text-truncate" data-i18n="KYC Management">{{
+                            __('admin-menue-left.kyc_management') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- kyc upload -->
+                        @if (PermissionService::has_permission('kyc_upload','admin'))
+                        @role('kyc upload')
+                        <li class="{{ Request::is('admin/kyc-management/kyc-upload-view') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.kyc-upload-view') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="KYC Upload">{{
+                                    __('admin-menue-left.kyc_upload') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- kyc reports -->
+                        @if (PermissionService::has_permission('kyc_reports','admin'))
+                        @role('kyc reports')
+                        <li class="{{ Request::is('admin/kyc-management/kyc-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('kyc.management.report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="KYC Reports">{{
+                                    __('admin-menue-left.kyc_reports') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- kyc request -->
+                        @if (PermissionService::has_permission('kyc_request','admin'))
+                        @role('kyc request')
+                        <li class="{{ Request::is('admin/kyc-management/kyc-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('kyc.management.request') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="KYC Request">{{
+                                    __('admin-menue-left.kyc_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- request management -->
+                @if (PermissionService::has_permission('manage_request','admin'))
+                @role('manage request')
+                <li class=" nav-item {{ Request::is('admin/manage-report/*') ? 'open' : '' }} ">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather="copy"></i>
+                        <span class="menu-title text-truncate" data-i18n="Request Management">{{
+                            __('admin-menue-left.request_management') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- deposit request -->
+                        @if (PermissionService::has_permission('deposit_request','admin'))
+                        @role('deposit request')
+                        <li class="{{ Request::is('admin/manage-report/deposit-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.manage.deposit') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Deposit Request">{{
+                                    __('admin-menue-left.deposit_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- withdraw request -->
+                        @if (PermissionService::has_permission('withdraw_request','admin'))
+                        @role('withdraw request')
+                        <li class="{{ Request::is('admin/manage-report/withdraw-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.manage.withdraw') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Withdraw Request">{{
+                                    __('admin-menue-left.withdraw_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- account request -->
+                        @if (PermissionService::has_permission('account_request','admin'))
+                        @role('account request')
+                        <li class="{{ Request::is('admin/manage-report/account-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.account-request') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Withdraw Request">{{
+                                    __('admin-menue-left.account_request') }}</span>
+                            </a>
+                        </li>
+
+                        @endrole
+                        @endif
+                        <!-- balance transfer -->
+                        @if (PermissionService::has_permission('balance_transfer_request','admin'))
+                        @role('balance transfer')
+                        <li class="{{ Request::is('admin/manage-report/balance-transfer') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.balance-transfer') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Balance Transfer">{{
+                                    __('admin-menue-left.balance_transfer') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib transfer request -->
+                        @if (PermissionService::has_permission('ib_transfer_request','admin'))
+                        @role('ib transfer')
+                        <li class="{{ Request::is('admin/manage-report/ib-transfer') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-transfer') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Transfer">{{
+                                    __('admin-menue-left.ib_transfer') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib withdraw request -->
+                        @if (PermissionService::has_permission('ib_withdraw_request','admin'))
+                        @role('ib withdraw request')
+                        <li class="{{ Request::is('admin/manage-report/ib-withdraw-request') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.ib-transfer.withdraw') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Withdraw Request">{{
+                                    __('admin-menue-left.ib_withdraw_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- fund transfer -->
+                @if (PermissionService::has_permission('fund_transfer','admin'))
+                @role('fund transfer')
+                <li class="check_height nav-item {{ Request::is('admin/fund/*') ? 'open' : '' }} ">
+                    <a class="d-flex align-items-center" id="height_check" href="#">
+                        <i data-feather='credit-card'></i>
+                        <span class="menu-title text-truncate" data-i18n="Fund Transfer">{{
+                            __('admin-menue-left.fund_trasfer') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- internal fund transfer -->
+                        @if (PermissionService::has_permission('internal_fund_transfer','admin'))
+                        @role('internal fund transfer')
+                        <li class="{{ Request::is('admin/fund/internal-fund-transfer') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.fund-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Internal Fund Transfer">{{
+                                    __('admin-menue-left.internal_transfer') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- external fund transfer -->
+                        @if (PermissionService::has_permission('external_fund_transfer','admin'))
+                        @role('external fund transfer')
+                        <li class="{{ Request::is('admin/fund/external-fund-transfer') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.external-fund-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="External Fund Transfer">{{
+                                    __('admin-menue-left.external_transfer') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- all reports -->
+                @if (PermissionService::has_permission('reports','admin'))
+                @role('reports')
+                <li class="check_height nav-item {{ Request::is('admin/report/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='sliders'></i>
+                        <span class="menu-title text-truncate" data-i18n="Reports">{{ __('admin-menue-left.reports')
+                            }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- ib withdraw -->
+                        @if (PermissionService::has_permission('ib_withdraw','admin'))
+                        @role('ib withdraw')
+                        <li class="{{ Request::is('admin/report/withdraw/ib') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/report/withdraw/ib') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Withdraw">{{
+                                    __('admin-menue-left.ib_withdraw') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib commission report -->
+                        @if (PermissionService::has_permission('ib_commission','admin'))
+                        <li class="{{ Request::is('admin/report/ib-commission') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/report/ib-commission') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Commission">{{
+                                    __('admin-menue-left.ib_commission') }}</span>
+                            </a>
+                        </li>
+                        @endif
+                        <!-- trader withdraw -->
+                        @if (PermissionService::has_permission('trader_withdraw','admin'))
+                        @role('trader withdraw')
+                        <li class="{{ Request::is('admin/report/withdraw/trader') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/report/withdraw/trader') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Trader Withdraw">{{
+                                    __('admin-menue-left.trader_withdraw') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- deposit request -->
+                        @if (PermissionService::has_permission('deposit_request','admin'))
+                        @role('deposit request report')
+                        <li class="{{ Request::is('admin/report/deposit') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.deposit-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Deposit Request">{{
+                                    __('admin-menue-left.deposit_request') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ********************************* *************-->
+                        <!-- don't remove this section, it's for later -->
+                        <!-- ************************************************ -->
+                        <!-- <li class="{{ Request::is('admin/report/log') ? 'active' : '' }}">
+                                                                                    <a class="d-flex align-items-center" href="{{ route('admin.log-report') }}">
+                                                                                        <i data-feather="circle"></i>
+                                                                                        <span class="menu-item text-truncate" data-i18n="Log Report">{{ __('admin-menue-left.log_report') }}</span>
+                                                                                    </a>
+                                                                                </li> -->
+                        <!-- activity log -->
+                        @if (PermissionService::has_permission('activity_log','admin'))
+                        @role('activity log')
+                        <li class="{{ Request::is('admin/report/activity-log') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.activity-log') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Activity log">{{
+                                    __('admin-menue-left.activity_log') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- trader deposit report -->
+                        @if (PermissionService::has_permission('trader_deposit_report','admin'))
+                        @role('trader deposit report')
+                        <li class="{{ Request::is('admin/report/trader-deposit') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.trader-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Trader Deposit">{{
+                                    __('admin-menue-left.trader_deposit') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- bonus report -->
+                        @if (PermissionService::has_permission('bonus_report','admin'))
+                        @role('bonus report')
+                        <li class="{{ Request::is('admin/report/user-bonus-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.user.bonus-report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Basic">
+                                    {{ __('admin-menue-left.Bonus_Report') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ib fund transfer -->
+                        @if (PermissionService::has_permission('ib_fund_transfer','admin'))
+                        @role('ib fund transfer')
+                        <li class="{{ Request::is('admin/report/ib-fund-transfer-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.user.ib-fund-transfer') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="IB Fund Transfer">{{
+                                    __('admin-menue-left.ib_fund_transfer') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- balance upload and deduction -->
+                        @if (PermissionService::has_permission('balance_upload_and_deduction','admin'))
+                        @role('balance upload report')
+                        <li class="{{ Request::is('admin/report/balance-upload-deduction-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.balance.upload') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Balance Upload and Deduction">{{
+                                    __('admin-menue-left.balance_upload') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- ledger report -->
+                        @if (PermissionService::has_permission('ledger_report','admin'))
+                        @role('ledger report')
+                        <li class="{{ Request::is('admin/report/ledger-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.report.ledger') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Ledger Report">{{
+                                    __('admin-menue-left.ledger_report') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- individual ledger report -->
+                        @if (PermissionService::has_permission('individual_ledger_report','admin'))
+                        @role('individual ledger report')
+                        <li class="{{ Request::is('admin/report/individual-ledger-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.report.ledger-individual') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="individual Ledger Report">{{
+                                    __('admin-menue-left.individual_ledger_report') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- Voucher Generate -->
+                @if (PermissionService::has_permission('offers','admin'))
+                @role('offers')
+                <li class="check_height nav-item {{ Request::is('admin/voucher/*') ? 'open' : '' }}">
+                    <a class="d-flex align-items-center" href="#">
+                        <i data-feather='award'></i>
+                        <span class="menu-title text-truncate" data-i18n="Offers">
+                            {{ __('admin-menue-left.Offers') }} </span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- voucher generate -->
+                        @if (PermissionService::has_permission('voucher_generate','admin'))
+                        @role('voucher generate')
+                        <li class="{{ Request::is('admin/voucher') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.voucher.show') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Voucher Generate">
+                                    {{ __('admin-menue-left.Voucher_Generate') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- voucher report -->
+                        @if (PermissionService::has_permission('voucher_report','admin'))
+                        @role('voucher report')
+                        <li class="{{ Request::is('admin/voucher/voucher-report') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ route('admin.voucher.report') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Voucher Generate">
+                                    {{ __('admin-menue-left.Voucher_Report') }} </span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+                <!-- group settings -->
+                @if (PermissionService::has_permission('group_settings','admin'))
+                @role('group settings')
+                <li class="check_height nav-item"><a class="d-flex align-items-center" href="#">
+                        <i data-feather='tool'></i>
+                        <span class="menu-title text-truncate" data-i18n="Group Settings">{{
+                            __('admin-menue-left.group_settins') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <!-- group manager -->
+                        @if (PermissionService::has_permission('group_manager','admin'))
+                        @role('group manager')
+                        <li class="{{ Request::is('admin/client-groups/create') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/client-groups/create') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Group Manager">{{
+                                    __('admin-menue-left.group_manager') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- group list -->
+                        @if (PermissionService::has_permission('group_list','admin'))
+                        @role('group list')
+                        <li class="{{ Request::is('admin/client-groups') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/client-groups') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Group List">{{
+                                    __('admin-menue-left.group_list') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                        <!-- manage ib group -->
+                        @if (PermissionService::has_permission('manage_ib_group','admin'))
+                        @role('manage ib group')
+                        <li class="{{ Request::is('admin/ib-groups') ? 'active' : '' }}">
+                            <a class="d-flex align-items-center" href="{{ url('admin/ib-groups') }}">
+                                <i data-feather="circle"></i>
+                                <span class="menu-item text-truncate" data-i18n="Manage IB Group">{{
+                                    __('admin-menue-left.manage_ib_group') }}</span>
+                            </a>
+                        </li>
+                        @endrole
+                        @endif
+                    </ul>
+                </li>
+                @endrole
+                @endif
+            </ul>
+        </div>
+    </div>
+    <!-- END: Main Menu-->
+    <!-- Basic tour -->
+    <section id="basic-tour" class="d-none">
+        <div class="row">
+            <div class="col-sm-4 offset-md-4 mt-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Tour</h4>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-outline-primary" id="tour">Start Tour</button>
                     </div>
                 </div>
             </div>
         </div>
-    </body>
+    </section>
+    <!--/ Basic tour -->
+
+    <!-- BEGIN: Content-->
+    @yield('content')
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer class="footer footer-static footer-light">
+        <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">
+                &copy;{{ get_copyright() }}{{ date('Y') }}</span></p>
+    </footer>
+    <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
+    <!-- END: Footer-->
+
+
+    <!-- BEGIN: Vendor JS-->
+
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/vendors.min.js') }}"></script>
+    @yield('vendor-js')
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/submit-wait.js') }}"></script>
+    @yield('page-vendor-js')
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="{{ asset('admin-assets/app-assets/js/core/app-menu.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/core/app.js') }}"></script>
+    <script src="{{ asset('admin-assets/src/js/core/confirm-alert.js') }}"></script>
+    <!--confirm alert || mail send with notify-->
+
+
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/ui/ui-feather.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/table-color.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/common-ajax.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/server-side-button-action.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/lang-change.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/datatable-functions.js') }}"></script>
+    <!-- BEGIN: Page tour JS-->
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/tether.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/shepherd.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/js/scripts/extensions/ext-component-tour.js') }}"></script>
+    <script src="{{ asset('/common-js/custom-from-validation.js') }}"></script>
+    {{--
+    <!-- <script src="{{asset('admin-assets/app-assets/js/scripts/forms/form-select2.js')}}"></script> --> --}}
+    <script src="{{ asset('trader-assets/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <!-- enter key handler -->
+    <script src="{{asset('common-js/enter-key-handler.js')}}"></script>
+    @yield('page-js')
+    <!-- END: Page JS-->
+
+    <script>
+        // scroll to bottom bottom menu
+        $('.check_height').click(function() {
+            $(".main-menu-content").animate({
+                scrollTop: $('.main-menu-content').prop("scrollHeight")
+            }, 1000);
+        });
+
+
+
+        $(window).on('load', function() {
+            if (feather) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            }
+        });
+
+        var notiCount = $('#notiCount').html();
+        $(document).ready(function() {
+            if (notiCount > 9) {
+                $('#notiBel').html('9+');
+                $('#notiBelBottom').html('9+');
+                $('#notiDashboard').html('9+');
+                $('#allNotification').html('9+');
+            } else if (notiCount == 0) {
+                $('#notiBel').hide();
+                $('#notiBelBottom').hide();
+                $('#notiDashboard').hide();
+                $('#allNotification').hide();
+            } else {
+                $('#notiBel').html(notiCount);
+                $('#notiBelBottom').html(notiCount);
+                $('#notiDashboard').html(notiCount);
+                $('#allNotification').html(notiCount);
+            }
+        });
+
+
+        if ($('.shepherd-cancel-icon').click()) {
+            $('#dashMainMenuID').addClass('open');
+            $('#dashboard_first').addClass('active');
+            $(".left-setting-menu").closest('li').removeClass('open sidebar-group-active');
+        }
+
+
+        // if (document.querySelector('.select4')) {
+        //     var element = document.querySelector('.choice-material');
+        //     const example = new Choices(element, {
+        //         searchEnabled: true,
+        //         itemSelectText: ''
+        //     });
+        // };
+
+        // button color fix
+        // $(document).on("click","button".function(){
+        //
+        // })
+
+        $(document).ready(function() {
+            $("button").each(function() {
+                $(this).removeClass("waves-effect");
+            });
+        });
+    </script>
+</body>
+<!-- END: Body-->
+
 </html>

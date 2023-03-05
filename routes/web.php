@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\InformationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,5 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // route for admin side
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+// show personal info page
+Route::get('/admin/personal-info', [InformationController::class, 'showPersonalInfoPage'])->name('admin.personal-info');

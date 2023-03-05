@@ -520,14 +520,14 @@
         <div class="shadow-bottom"></div>
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class="active nav-item"><a class="d-flex align-items-center"
+                <li class="{{ Request::is('admin') ? 'active' : '' }}"><a class="d-flex align-items-center"
                         href="{{ route('admin.dashboard') }}"><i data-feather="home"></i><span
                             class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span></a>
                 </li>
                 <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i
                         data-feather="more-horizontal"></i>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-email.html"><i
+                <li class="{{ Request::is('admin/personal-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.personal-info') }}"><i
                             data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Personal
                             Information</span></a>
                 </li>
@@ -599,7 +599,7 @@
     @yield('vendor-js')
 
     <!-- BEGIN: Page Vendor JS-->
-    <script src="{{ asset('admin-assets/app-assets/vendors/js/charts/apexcharts.min.js') }}"></script>
+    {{-- <script src="{{ asset('admin-assets/app-assets/vendors/js/charts/apexcharts.min.js') }}"></script> --}}
     <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
     <!-- END: Page Vendor JS-->
     @yield('page-vendor-js')
@@ -611,7 +611,7 @@
     @yield('theme-js')
 
     <!-- BEGIN: Page JS-->
-    <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script>
+    {{-- <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script> --}}
     <script src="{{ asset('assets/custom-js/common-ajax.js') }}"></script>
     <!-- END: Page JS-->
     @yield('page-js')
