@@ -1,4 +1,5 @@
 @extends('layouts.admin-layout')
+@section('title', 'Admin Dashboard')
 @section('content')
 <!-- Dashboard Ecommerce Starts -->
 <section id="dashboard-ecommerce">

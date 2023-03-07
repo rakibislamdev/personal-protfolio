@@ -11,7 +11,7 @@
     <meta name="keywords"
         content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Rakib - Admin Dashboard</title>
+    <title>Rakib - @yield('title')</title>
     @yield('title')
     <link rel="apple-touch-icon" href="{{ asset('admin-assets/app-assets/images/ico/apple-icon-120.png') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin-assets/app-assets/images/ico/favicon.ico') }}">
@@ -625,8 +625,16 @@
                 });
             }
         })
+
+        // toastr
+        function notify(status,message,title) {
+            toastr[status](message, title, {
+                closeButton: true,
+                tapToDismiss: false,
+                progressBar: true
+            });
+        }
     </script>
-    @
 </body>
 <!-- END: Body-->
 

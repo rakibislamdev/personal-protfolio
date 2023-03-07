@@ -27,3 +27,5 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 // show personal info page
 Route::get('/admin/personal-info', [InformationController::class, 'showPersonalInfoPage'])->name('admin.personal-info');
+// store personal info
+Route::post('admin/store/personal-info', [InformationController::class, 'storePersonalInfo'])->name('admin.personal-info.store');
