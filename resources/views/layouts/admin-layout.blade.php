@@ -51,6 +51,11 @@
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/assets/css/style.css') }}">
+    <style>
+        .error-msg {
+            color: red;
+        }
+    </style>
     <!-- END: Custom CSS-->
     @yield('custom-css')
 
@@ -531,7 +536,7 @@
                             data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Personal
                             Information</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-chat.html"><i
+                <li class="{{ Request::is('admin/education-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.education-info') }}"><i
                             data-feather="message-square"></i><span class="menu-title text-truncate"
                             data-i18n="Chat">Education</span></a>
                 </li>

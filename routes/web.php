@@ -25,7 +25,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // route for admin side
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-// show personal info page
+// personal info route
 Route::get('/admin/personal-info', [InformationController::class, 'showPersonalInfoPage'])->name('admin.personal-info');
-// store personal info
 Route::post('admin/store/personal-info', [InformationController::class, 'storePersonalInfo'])->name('admin.personal-info.store');
+
+// education info route
+Route::get('/admin/education-info', [InformationController::class, 'showEducationInfoPage'])->name('admin.education-info');
+Route::post('admin/store/education-info', [InformationController::class, 'storeEducationInfo'])->name('admin.education-info.store');

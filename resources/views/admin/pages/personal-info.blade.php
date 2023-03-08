@@ -81,8 +81,8 @@
                         placeholder="Textarea">{{ $personal_infos ? $personal_infos->description : '' }}</textarea>
                 </div>
 
-                <div class="col-12">
-                    <button class="btn btn-primary" type="button" id="personal_info_btn" onclick="_run(this)" data-el="fg"
+                <div class="col-12 text-center">
+                    <button class="btn btn-success w-50" type="button" id="personal_info_btn" onclick="_run(this)" data-el="fg"
                         data-form="personal_info_form" data-callback="personalInfoCallback" data-btnid="personal_info_btn">
                         <span class="align-middle d-sm-inline-block d-none">Submit</span>
                     </button>
