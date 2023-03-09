@@ -35,3 +35,6 @@ Route::post('admin/store/personal-info', [PersonalInfoController::class, 'store'
 Route::get('/admin/education-info', [EducationController::class, 'index'])->name('admin.education-info');
 Route::post('admin/store/education-info', [EducationController::class, 'store'])->name('admin.education-info.store');
 Route::get('admin/get/education-info', [EducationController::class, 'getEducationInfo'])->name('admin.education-info.get');
+Route::get('admin/edit/education-info/', [EducationController::class, 'edit'])->name('admin.education-info.edit');
+Route::post('admin/update/education-info', [EducationController::class, 'update'])->name('admin.education-info.update');
+Route::get('admin/delete/education-info', [EducationController::class, 'deleteEducationInfo'])->name('admin.education-info.delete');

@@ -64,36 +64,60 @@ class EducationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * edit the education info
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-
+        if ($request->ajax()) {
+            $id = $request->id;
+            $education_info = EducationInfo::find($id);
+            return Response::json($education_info);
+        }
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update the education info
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if($request->ajax()){
+            $validation_rules = [
+                'update_course_name' => 'required',
+                'update_institute_name' => 'required',
+                'update_start_date' => 'required',
+                'update_end_date' => 'nullable',
+                'update_course_details' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => false, 'message' => 'Please fix the following errors.', 'errors' => $validator->errors()]);
+            } else {
+                $data = EducationInfo::find($request->update_id);
+                $data->course_name = $request->update_course_name;
+                $data->institute_name = $request->update_institute_name;
+                $data->start_date = $request->update_start_date;
+                $data->end_date = $request->update_end_date;
+                $data->course_details = $request->update_course_details;
+                $data->save();
+                return Response::json(['status' => true, 'message' => 'Education info updated successfully.']);
+            }
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * delete the education info
      */
-    public function destroy($id)
+    public function deleteEducationInfo(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $delete = EducationInfo::find($request->id)->delete();
+            if ($delete) {
+                return Response::json(['status' => true, 'message' => 'Education info deleted successfully.']);
+            } else {
+                return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+            }
+        }
     }
 }

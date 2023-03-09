@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/components.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/dark-layout.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/bordered-layout.css') }}">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="{{ asset('admin-assets/app-assets/css/themes/semi-dark-layout.css') }}">
     @yield('theme-css')
@@ -611,6 +612,7 @@
     <!-- BEGIN: Page Vendor JS-->
     {{-- <script src="{{ asset('admin-assets/app-assets/vendors/js/charts/apexcharts.min.js') }}"></script> --}}
     <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/sweetalert2.all.min.js') }}"></script>
     <!-- END: Page Vendor JS-->
     @yield('page-vendor-js')
 
