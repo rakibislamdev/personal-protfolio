@@ -55,6 +55,11 @@
         .error-msg {
             color: red;
         }
+
+        .cus-feather{
+            width: 28px;
+            height: 28px;
+        }
     </style>
     <!-- END: Custom CSS-->
     @yield('custom-css')
@@ -618,6 +623,7 @@
     <!-- BEGIN: Page JS-->
     {{-- <script src="{{ asset('admin-assets/app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script> --}}
     <script src="{{ asset('assets/custom-js/common-ajax.js') }}"></script>
+    <script src="{{ asset('assets/js/feather.min.js') }}"></script>
     <!-- END: Page JS-->
     @yield('page-js')
 

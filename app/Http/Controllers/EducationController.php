@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EducationInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class EducationController extends Controller
 {
@@ -13,17 +16,8 @@ class EducationController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $education_infos = EducationInfo::all();
+        return view('admin.pages.education-info', compact('education_infos'));
     }
 
     /**
@@ -34,18 +28,39 @@ class EducationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $validation_rules = [
+                'course_name' => 'required',
+                'institute_name' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required',
+                'course_details' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $validation_rules);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => false, 'message' => 'Please fix the following errors.', 'errors' => $validator->errors()]);
+            } else {
+                $store = EducationInfo::create($request->all());
+                if ($store) {
+                    return Response::json(['status' => true, 'message' => 'Education info added successfully.']);
+                } else {
+                    return Response::json(['status' => false, 'message' => 'Something went wrong.']);
+                }
+            }
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * get all education info
      */
-    public function show($id)
+    public function getEducationInfo()
     {
-        //
+        $education_infos = EducationInfo::all();
+        return Response::json($education_infos);
     }
 
     /**
@@ -56,7 +71,7 @@ class EducationController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**

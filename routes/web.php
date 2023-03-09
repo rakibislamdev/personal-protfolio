@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\EducationController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\PersonalInfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +28,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // route for admin side
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 // personal info route
-Route::get('/admin/personal-info', [InformationController::class, 'showPersonalInfoPage'])->name('admin.personal-info');
-Route::post('admin/store/personal-info', [InformationController::class, 'storePersonalInfo'])->name('admin.personal-info.store');
+Route::get('/admin/personal-info', [PersonalInfoController::class, 'index'])->name('admin.personal-info');
+Route::post('admin/store/personal-info', [PersonalInfoController::class, 'store'])->name('admin.personal-info.store');
 
 // education info route
-Route::get('/admin/education-info', [InformationController::class, 'showEducationInfoPage'])->name('admin.education-info');
-Route::post('admin/store/education-info', [InformationController::class, 'storeEducationInfo'])->name('admin.education-info.store');
+Route::get('/admin/education-info', [EducationController::class, 'index'])->name('admin.education-info');
+Route::post('admin/store/education-info', [EducationController::class, 'store'])->name('admin.education-info.store');
+Route::get('admin/get/education-info', [EducationController::class, 'getEducationInfo'])->name('admin.education-info.get');
