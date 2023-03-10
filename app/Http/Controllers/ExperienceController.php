@@ -14,18 +14,9 @@ class ExperienceController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.pages.experience-info');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +26,7 @@ class ExperienceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $request;
     }
 
     /**

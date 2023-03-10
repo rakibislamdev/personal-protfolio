@@ -13,49 +13,50 @@
     href="{{ asset('admin-assets/app-assets/css/plugins/forms/pickers/form-flat-pickr.css') }}">
 <link rel="stylesheet" type="text/css"
     href="{{ asset('admin-assets/app-assets/css/plugins/forms/pickers/form-pickadate.css') }}">
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css"> --}}
+{{--
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css"> --}}
 @endsection
 
 @section('content')
 <!-- profile -->
 <div class="card">
     <div class="card-header border-bottom">
-        <h4 class="card-title">Educational Details</h4>
+        <h4 class="card-title">Experience Details</h4>
     </div>
     <div class="card-body">
         <!-- form -->
-        <form class="mt-2 pt-50" id="educational_info_form" method="POST"
-            action="{{ route('admin.education-info.store') }}">
+        <form class="mt-2 pt-50" id="experience-info-form" method="POST"
+            action="{{ route('admin.experience-info.store') }}">
             @csrf
             <div class="row">
                 <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="course-name">Course Name</label>
-                    <input type="text" name="course_name" value="" class="form-control" id="course-name" name="name" />
+                    <label class="form-label" for="course-name">Desingnation Name</label>
+                    <input type="text" name="name"  class="form-control" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
                     <label class="form-label" for="email">Institute Name</label>
-                    <input type="text" class="form-control" value="" id="institute_name" name="institute_name" />
+                    <input type="text" class="form-control" name="com_name" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
                     <label class="form-label" for="start-date">Start Date</label>
-                    <input type="text" id="start-date" name="start_date" class="date form-control flatpickr-basic"
+                    <input type="text" name="start_date" class="date form-control flatpickr-basic"
                         placeholder="YYYY-MM-DD" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
                     <label class="form-label" for="end-date">End Date</label>
-                    <input type="text" id="end-date" name="end_date" class="date form-control flatpickr-basic"
+                    <input type="text" name="end_date" class="date form-control flatpickr-basic"
                         placeholder="YYYY-MM-DD" />
                 </div>
                 <div class="col-12 col-sm-12 mb-1">
                     <label class="form-label" for="course-details">Details</label>
-                    <textarea name="course_details" class="form-control" id="course_details" rows="3"
-                        placeholder="Textarea"></textarea>
+                    <textarea name="exp_details" class="form-control" rows="3"
+                        placeholder="Write something about your working experience"></textarea>
                 </div>
 
                 <div class="col-12 text-center">
-                    <button class="btn btn-success w-50" type="button" id="edu_info_btn" onclick="_run(this)"
-                        data-el="fg" data-form="educational_info_form" data-callback="educationalInfoCallback"
-                        data-btnid="edu_info_btn">
+                    <button class="btn btn-success w-50" type="button" id="exp_info_btn" onclick="_run(this)"
+                        data-el="fg" data-form="experience-info-form" data-callback="experienceInfoCallback"
+                        data-btnid="exp_info_btn">
                         <span class="align-middle d-sm-inline-block d-none">Submit</span>
                     </button>
                 </div>
@@ -109,37 +110,41 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="mt-2 pt-50" id="update_edu_form" method="POST" action="{{ route('admin.education-info.update') }}">
+                <form class="mt-2 pt-50" id="update_edu_form" method="POST"
+                    action="{{ route('admin.education-info.update') }}">
                     @csrf
                     <input type="hidden" name="update_id" id="update-id">
                     <div class="row">
                         <div class="col-12 col-sm-6 mb-1">
                             <label class="form-label" for="course-name">Course Name</label>
-                            <input type="text" name="update_course_name" value="" class="form-control" id="update-course-name" name="name" />
+                            <input type="text" name="update_course_name" value="" class="form-control"
+                                id="update-course-name" name="name" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
                             <label class="form-label" for="email">Institute Name</label>
-                            <input type="text" class="form-control" value="" id="update-institute-name" name="update_institute_name" />
+                            <input type="text" class="form-control" value="" id="update-institute-name"
+                                name="update_institute_name" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
                             <label class="form-label" for="start-date">Start Date</label>
-                            <input type="text" id="update-start-date" name="update_start_date" class="date form-control flatpickr-basic"
-                                placeholder="YYYY-MM-DD" />
+                            <input type="text" id="update-start-date" name="update_start_date"
+                                class="date form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
                             <label class="form-label" for="end-date">End Date</label>
-                            <input type="text" id="update-end-date" name="update_end_date" class="date form-control flatpickr-basic"
-                                placeholder="YYYY-MM-DD" />
+                            <input type="text" id="update-end-date" name="update_end_date"
+                                class="date form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
                         </div>
                         <div class="col-12 col-sm-12 mb-1">
                             <label class="form-label" for="course-details">Details</label>
-                            <textarea name="update_course_details" class="form-control" id="update-course-details" rows="3"
-                                placeholder="Write something about you eucation..."></textarea>
+                            <textarea name="update_course_details" class="form-control" id="update-course-details"
+                                rows="3" placeholder="Textarea"></textarea>
                         </div>
 
                         <div class="col-12 text-center">
-                            <button class="btn btn-success w-50" type="button" id="update_info_btn" onclick="_run(this)" data-el="fg"
-                                data-form="update_edu_form" data-callback="updateInfoCallback" data-btnid="update_info_btn">
+                            <button class="btn btn-success w-50" type="button" id="update_info_btn" onclick="_run(this)"
+                                data-el="fg" data-form="update_edu_form" data-callback="updateInfoCallback"
+                                data-btnid="update_info_btn">
                                 <span class="align-middle d-sm-inline-block d-none">Update</span>
                             </button>
                         </div>

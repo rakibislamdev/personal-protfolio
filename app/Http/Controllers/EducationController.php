@@ -33,7 +33,7 @@ class EducationController extends Controller
                 'course_name' => 'required',
                 'institute_name' => 'required',
                 'start_date' => 'required',
-                'end_date' => 'required',
+                'end_date' => 'nullable',
                 'course_details' => 'required',
             ];
 

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('course_name');
             $table->string('institute_name');
             $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('end_date')->nullable();
             $table->string('course_details');
             $table->timestamps();
         });

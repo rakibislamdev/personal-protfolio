@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\PersonalInfoController;
 
@@ -38,3 +39,8 @@ Route::get('admin/get/education-info', [EducationController::class, 'getEducatio
 Route::get('admin/edit/education-info/', [EducationController::class, 'edit'])->name('admin.education-info.edit');
 Route::post('admin/update/education-info', [EducationController::class, 'update'])->name('admin.education-info.update');
 Route::get('admin/delete/education-info', [EducationController::class, 'deleteEducationInfo'])->name('admin.education-info.delete');
+
+
+// experience info route
+Route::get('admin/experience-info', [ExperienceController::class, 'index'])->name('admin.experience-info');
+Route::post('admin/store/experience-info', [ExperienceController::class, 'store'])->name('admin.experience-info.store');

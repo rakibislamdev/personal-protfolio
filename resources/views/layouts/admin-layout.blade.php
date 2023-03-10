@@ -546,7 +546,7 @@
                             data-feather="message-square"></i><span class="menu-title text-truncate"
                             data-i18n="Chat">Education</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-calendar.html"><i
+                <li class="{{ Request::is('admin/experience-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.experience-info') }}"><i
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Experience</span></a>
                 </li>
