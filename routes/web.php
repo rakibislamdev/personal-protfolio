@@ -44,3 +44,7 @@ Route::get('admin/delete/education-info', [EducationController::class, 'deleteEd
 // experience info route
 Route::get('admin/experience-info', [ExperienceController::class, 'index'])->name('admin.experience-info');
 Route::post('admin/store/experience-info', [ExperienceController::class, 'store'])->name('admin.experience-info.store');
+Route::get('admin/get/experience-info', [ExperienceController::class, 'getExperienceInfo'])->name('admin.experience-info.get');
+Route::get('admin/edit/experience-info', [ExperienceController::class, 'edit'])->name('admin.experience-info.edit');
+Route::post('admin/update/experience-info', [ExperienceController::class, 'update'])->name('admin.experience-info.update');
+Route::get('admin/delete/experience-info', [ExperienceController::class, 'deleteExperienceInfo'])->name('admin.experience-info.delete');

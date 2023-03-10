@@ -31,11 +31,11 @@
             <div class="row">
                 <div class="col-12 col-sm-6 mb-1">
                     <label class="form-label" for="course-name">Desingnation Name</label>
-                    <input type="text" name="name"  class="form-control" />
+                    <input type="text" name="designation"  class="form-control" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="email">Institute Name</label>
-                    <input type="text" class="form-control" name="com_name" />
+                    <label class="form-label" for="email">Company Name</label>
+                    <input type="text" class="form-control" name="company_name" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
                     <label class="form-label" for="start-date">Start Date</label>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="col-12 col-sm-12 mb-1">
                     <label class="form-label" for="course-details">Details</label>
-                    <textarea name="exp_details" class="form-control" rows="3"
+                    <textarea name="experience_details" class="form-control" rows="3"
                         placeholder="Write something about your working experience"></textarea>
                 </div>
 
@@ -66,42 +66,14 @@
     </div>
 
 </div>
-{{-- <div class="item-features">
-    <div class="row text-center">
-        @if ($education_infos->count() == 0)
-        <div class="col-12">
-            <h4 class="text-center">No Educational Info Found</h4>
-        </div>
-        @else
-        @foreach ($education_infos as $education_info)
-        <div class="col-12 col-md-4 mb-4 mb-md-0">
-            <div class="w-100">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-end">
-                            <i data-feather='edit'></i>
-                            <i data-feather='trash-2'></i>
-                        </div>
-                        <i class="cus-feather" data-feather='book-open'></i>
-                        <h4 class="mt-2 mb-1">{{ $education_info->course_name }}</h4>
-                        <p class="card-text">{{ $education_info->institute_name }}</p>
-                        <p>{{ $education_info->course_details }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endforeach
-        @endif
-    </div>
-</div> --}}
 <div class="item-features">
-    <div class="row text-center education-info-block">
+    <div class="row text-center experience-info-block">
 
     </div>
 </div>
 
 {{-- modal section --}}
-<div class="modal fade" id="update-edu-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="update-exp-modal" tabindex="-1" aria-labelledby="updateExperienccModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -110,20 +82,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="mt-2 pt-50" id="update_edu_form" method="POST"
-                    action="{{ route('admin.education-info.update') }}">
+                <form class="mt-2 pt-50" id="update-exp-form" method="POST"
+                    action="{{ route('admin.experience-info.update') }}">
                     @csrf
-                    <input type="hidden" name="update_id" id="update-id">
+                    <input type="hidden" name="id" id="update-id">
                     <div class="row">
                         <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="course-name">Course Name</label>
-                            <input type="text" name="update_course_name" value="" class="form-control"
-                                id="update-course-name" name="name" />
+                            <label class="form-label" for="course-name">Designation</label>
+                            <input type="text" name="update_designation" value="" id="update-designation" class="form-control" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="email">Institute Name</label>
-                            <input type="text" class="form-control" value="" id="update-institute-name"
-                                name="update_institute_name" />
+                            <label class="form-label" for="email">Company Name</label>
+                            <input type="text" class="form-control" value="" id="update-company-name"
+                                name="update_company_name" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
                             <label class="form-label" for="start-date">Start Date</label>
@@ -137,14 +108,14 @@
                         </div>
                         <div class="col-12 col-sm-12 mb-1">
                             <label class="form-label" for="course-details">Details</label>
-                            <textarea name="update_course_details" class="form-control" id="update-course-details"
+                            <textarea name="update_exp_details" class="form-control" id="update-exp-details"
                                 rows="3" placeholder="Textarea"></textarea>
                         </div>
 
                         <div class="col-12 text-center">
-                            <button class="btn btn-success w-50" type="button" id="update_info_btn" onclick="_run(this)"
-                                data-el="fg" data-form="update_edu_form" data-callback="updateInfoCallback"
-                                data-btnid="update_info_btn">
+                            <button class="btn btn-success w-50" type="button" id="update_exp_btn" onclick="_run(this)"
+                                data-el="fg" data-form="update-exp-form" data-callback="updateExperienceInfoCallback"
+                                data-btnid="update_exp_btn">
                                 <span class="align-middle d-sm-inline-block d-none">Update</span>
                             </button>
                         </div>
@@ -174,16 +145,14 @@
     // feather icon
     // feather.replace();
      // realtime time education info show
-    function realtimeEducationInfo() {
+    function realtimeExperienceInfo() {
         $.ajax({
-            url: "{{ route('admin.education-info.get') }}",
+            url: "{{ route('admin.experience-info.get') }}",
             type: "GET",
             success: function(data) {
-                // console.log(data);
-                // alert('kaj hoice');
 
                 // Assuming `data` is an array of education info objects
-                var container = $('.education-info-block');
+                var container = $('.experience-info-block');
                 container.empty(); // Clear any previous content
 
                 // Loop through the data and create a new card for each education info object
@@ -205,14 +174,14 @@
                                             '<span class="badge bg-light-primary">' + startYear + ' - ' + endYear + '</span>' +
                                         '</div>' +
                                         '<div>' +
-                                            '<button type="button" data-id="' + info.id + '" id="edu_edit_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-success" data-bs-toggle="modal" data-bs-target="#update-edu-modal"><i data-feather="edit"></i></button>' +
-                                            '<button type="button" data-id="' + info.id + '" id="edu_delete_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-danger"><i data-feather="trash-2"></i></button>' +
+                                            '<button type="button" data-id="' + info.id + '" id="exp_edit_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-success" data-bs-toggle="modal" data-bs-target="#update-exp-modal"><i data-feather="edit"></i></button>' +
+                                            '<button type="button" data-id="' + info.id + '" id="exp_delete_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-danger"><i data-feather="trash-2"></i></button>' +
                                         '</div>' +
                                         '</div>' +
                                     '<i class="cus-feather" data-feather="book-open"></i>' +
-                                    '<h4 class="mt-2 mb-1">' + info.course_name + '</h4>' +
-                                    '<p class="card-text">' + info.institute_name + '</p>' +
-                                    '<p>' + info.course_details + '</p>' +
+                                    '<h4 class="mt-2 mb-1">' + info.designation + '</h4>' +
+                                    '<p class="card-text">' + info.company_name + '</p>' +
+                                    '<p>' + info.experience_details + '</p>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
@@ -225,27 +194,25 @@
         });
     }
 
-    realtimeEducationInfo();
+    realtimeExperienceInfo();
     // educational info callback
-    function educationalInfoCallback(data) {
+    function experienceInfoCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'Educational Info');
-            $('#educational_info_form').trigger('reset');
+            notify('success', data.message, 'Experience Info');
+            $('#experience-info-form').trigger('reset');
             // window.location.reload();
-            realtimeEducationInfo();
+            realtimeExperienceInfo();
         } else {
             notify('error', data.message, 'Educational Info');
-            $.validator('educational_info_form', data.errors);
+            $.validator('experience-info-form', data.errors);
         }
     }
 
     // education edit
-
-    $(document).on('click', '#edu_edit_btn', function() {
+    $(document).on('click', '#exp_edit_btn', function() {
         var id = $(this).attr('data-id');
-
         $.ajax({
-            url: "{{ route('admin.education-info.edit') }}",
+            url: "{{ route('admin.experience-info.edit') }}",
             type: "GET",
             data: {
                 id: id
@@ -253,31 +220,31 @@
             success: function(data) {
                 // console.log(data);
                 $('#update-id').val(data.id);
-                $('#update-course-name').val(data.course_name);
-                $('#update-institute-name').val(data.institute_name);
+                $('#update-designation').val(data.designation);
+                $('#update-company-name').val(data.company_name);
                 $('#update-start-date').val(data.start_date);
                 $('#update-end-date').val(data.end_date);
-                $('#update-course-details').val(data.course_details);
+                $('#update-exp-details').val(data.experience_details);
             }
         });
 
     });
 
     // education update callback
-    function updateInfoCallback(data) {
+    function updateExperienceInfoCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'Educational Info');
-            $('#update_edu_form').trigger('reset');
-            $('#update-edu-modal').modal('hide');
-            realtimeEducationInfo();
+            notify('success', data.message, 'Experience Info');
+            $('#update-exp-form').trigger('reset');
+            $('#update-exp-modal').modal('hide');
+            realtimeExperienceInfo();
         } else {
-            notify('error', data.message, 'Educational Info');
-            $.validator('update_edu_form', data.errors);
+            notify('error', data.message, 'Experience Info');
+            $.validator('update-exp-form', data.errors);
         }
     }
 
 // delete education info
-    $(document).on('click', '#edu_delete_btn', function() {
+    $(document).on('click', '#exp_delete_btn', function() {
         var id = $(this).attr('data-id');
 
         Swal.fire({
@@ -294,7 +261,7 @@
         }).then(function (result) {
             if (result.value) {
                 $.ajax({
-                    url: "{{ route('admin.education-info.delete') }}",
+                    url: "{{ route('admin.experience-info.delete') }}",
                     type: "GET",
                     data: {
                         id: id
@@ -303,7 +270,7 @@
                         // console.log(data);
                         if (data.status == true) {
                             notify('success', data.message, 'Educational Info');
-                            realtimeEducationInfo();
+                            realtimeExperienceInfo();
                         } else {
                             notify('error', data.message, 'Educational Info');
                         }
