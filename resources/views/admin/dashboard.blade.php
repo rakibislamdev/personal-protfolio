@@ -761,3 +761,82 @@
 </section>
 <!-- Dashboard Ecommerce ends -->
 @endsection
+
+
+@section('page-js')
+<script>
+    var $goalOverviewChart = document.querySelector('#goal-overview-radial-bar-chart');
+    var goalOverviewChartOptions;
+    var $goalStrokeColor2 = '#51e5a8';
+    var $strokeColor = '#ebe9f1';
+    var $textHeadingColor = '#5e5873';
+    //------------ Goal Overview Chart ------------
+  //---------------------------------------------
+  goalOverviewChartOptions = {
+    chart: {
+      height: 245,
+      type: 'radialBar',
+      sparkline: {
+        enabled: true
+      },
+      dropShadow: {
+        enabled: true,
+        blur: 3,
+        left: 1,
+        top: 1,
+        opacity: 0.1
+      }
+    },
+    colors: [$goalStrokeColor2],
+    plotOptions: {
+      radialBar: {
+        offsetY: -10,
+        startAngle: -150,
+        endAngle: 150,
+        hollow: {
+          size: '77%'
+        },
+        track: {
+          background: $strokeColor,
+          strokeWidth: '50%'
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            color: $textHeadingColor,
+            fontSize: '2.86rem',
+            fontWeight: '600'
+          }
+        }
+      }
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        type: 'horizontal',
+        shadeIntensity: 0.5,
+        gradientToColors: [window.colors.solid.success],
+        inverseColors: true,
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 100]
+      }
+    },
+    series: [23],
+    stroke: {
+      lineCap: 'round'
+    },
+    grid: {
+      padding: {
+        bottom: 30
+      }
+    }
+  };
+  goalOverviewChart = new ApexCharts($goalOverviewChart, goalOverviewChartOptions);
+  goalOverviewChart.render();
+</script>
+
+@endsection

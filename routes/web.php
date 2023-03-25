@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\CodingSkillController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InformationController;
@@ -48,3 +49,6 @@ Route::get('admin/get/experience-info', [ExperienceController::class, 'getExperi
 Route::get('admin/edit/experience-info', [ExperienceController::class, 'edit'])->name('admin.experience-info.edit');
 Route::post('admin/update/experience-info', [ExperienceController::class, 'update'])->name('admin.experience-info.update');
 Route::get('admin/delete/experience-info', [ExperienceController::class, 'deleteExperienceInfo'])->name('admin.experience-info.delete');
+
+// coding skill route
+Route::get('/admin/coding-skill', [CodingSkillController::class, 'index'])->name('admin.coding-skill');

@@ -550,11 +550,11 @@
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Experience</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-calendar.html"><i
+                {{-- <li class=" nav-item"><a class="d-flex align-items-center" href="app-calendar.html"><i
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Awards</span></a>
-                </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-kanban.html"><i
+                </li> --}}
+                <li class="{{ Request::is('admin/coding-skill' ? 'active' : '') }}"><a class="d-flex align-items-center" href="{{ route('admin.coding-skill') }}"><i
                             data-feather="grid"></i><span class="menu-title text-truncate" data-i18n="Kanban">Coding
                             Skills</span></a>
                 </li>
@@ -610,7 +610,7 @@
     @yield('vendor-js')
 
     <!-- BEGIN: Page Vendor JS-->
-    {{-- <script src="{{ asset('admin-assets/app-assets/vendors/js/charts/apexcharts.min.js') }}"></script> --}}
+    <script src="{{ asset('admin-assets/app-assets/vendors/js/charts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
     <script src="{{ asset('admin-assets/app-assets/vendors/js/extensions/sweetalert2.all.min.js') }}"></script>
     <!-- END: Page Vendor JS-->
