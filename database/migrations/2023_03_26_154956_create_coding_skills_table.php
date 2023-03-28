@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('coding_skills', function (Blueprint $table) {
             $table->id();
+            $table->string('skill_name');
+            $table->string('skill_level');
             $table->timestamps();
         });
     }

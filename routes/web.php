@@ -52,3 +52,8 @@ Route::get('admin/delete/experience-info', [ExperienceController::class, 'delete
 
 // coding skill route
 Route::get('/admin/coding-skill', [CodingSkillController::class, 'index'])->name('admin.coding-skill');
+Route::post('admin/store/coding-skill', [CodingSkillController::class, 'store'])->name('admin.coding-skill.store');
+Route::get('admin/get/coding-skill', [CodingSkillController::class, 'getCodingSkill'])->name('admin.coding-skill.get');
+Route::get('admin/edit/coding-skill', [CodingSkillController::class, 'edit'])->name('admin.coding-skill.edit');
+Route::post('admin/update/coding-skill', [CodingSkillController::class, 'update'])->name('admin.coding-skill.update');
+Route::get('admin/delete/coding-skill', [CodingSkillController::class, 'destroy'])->name('admin.coding-skill.delete');

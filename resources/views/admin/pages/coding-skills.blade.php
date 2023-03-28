@@ -3,9 +3,7 @@
 
 @section('vendor-css')
 <link rel="stylesheet" type="text/css"
-    href="{{ asset('admin-assets/app-assets/vendors/css/pickers/pickadate/pickadate.css') }}">
-<link rel="stylesheet" type="text/css"
-    href="{{ asset('admin-assets/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
+    href="{{ asset('admin-assets/app-assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css') }}">
 @endsection
 
 @section('page-css')
@@ -25,38 +23,24 @@
     </div>
     <div class="card-body">
         <!-- form -->
-        <form class="mt-2 pt-50" id="experience-info-form" method="POST"
-            action="{{ route('admin.experience-info.store') }}">
+        <form class="mt-2 pt-50" id="coding-skill-form" method="POST" action="{{ route('admin.coding-skill.store') }}">
             @csrf
             <div class="row">
                 <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="course-name">Desingnation Name</label>
-                    <input type="text" name="designation" class="form-control" />
+                    <label class="form-label" for="email">Skill Name</label>
+                    <input type="text" class="form-control" name="skill_name" />
                 </div>
                 <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="email">Company Name</label>
-                    <input type="text" class="form-control" name="company_name" />
-                </div>
-                <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="start-date">Start Date</label>
-                    <input type="text" name="start_date" class="date form-control flatpickr-basic"
-                        placeholder="YYYY-MM-DD" />
-                </div>
-                <div class="col-12 col-sm-6 mb-1">
-                    <label class="form-label" for="end-date">End Date</label>
-                    <input type="text" name="end_date" class="date form-control flatpickr-basic"
-                        placeholder="YYYY-MM-DD" />
-                </div>
-                <div class="col-12 col-sm-12 mb-1">
-                    <label class="form-label" for="course-details">Details</label>
-                    <textarea name="experience_details" class="form-control" rows="3"
-                        placeholder="Write something about your working experience"></textarea>
+                    <label class="form-label w-100" for="course-name">Skill Level</label>
+                    <div class="input-group input-group-lg w-100">
+                        <input type="number" name="skill_level" class="touchspin" value="" />
+                    </div>
                 </div>
 
                 <div class="col-12 text-center">
-                    <button class="btn btn-success w-50" type="button" id="exp_info_btn" onclick="_run(this)"
-                        data-el="fg" data-form="experience-info-form" data-callback="experienceInfoCallback"
-                        data-btnid="exp_info_btn">
+                    <button class="btn btn-success w-50" type="button" id="coding_skill_btn" onclick="_run(this)"
+                        data-el="fg" data-form="coding-skill-form" data-callback="codingSkillCallback"
+                        data-btnid="coding_skill_btn">
                         <span class="align-middle d-sm-inline-block d-none">Submit</span>
                     </button>
                 </div>
@@ -67,13 +51,46 @@
 
 </div>
 <div class="item-features">
-    <div class="row text-center experience-info-block">
-
+    <div class="card">
+        <div class="card-body">
+            <div class="row coding-skill-block">
+                {{-- <div class="col-12 col-sm-6 mb-1 border-end">
+                    <div class="d-flex justify-content-between mb-1">
+                        <div class="skill-name">HTML</div>
+                        <div>
+                            <button class="btn btn-icon btn-flat-danger delete-skill"><i data-feather="trash"></i></button>
+                            <button class="btn btn-icon btn-flat-success edit-skill"><i data-feather="edit"></i></button>
+                        </div>
+                    </div>
+                    <div class="progress progress-bar-success">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="45" aria-valuemax="100"
+                            style="width: 45%">
+                            45%
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 mb-1 border-end">
+                    <div class="d-flex justify-content-between mb-1">
+                        <div class="skill-name">CSS</div>
+                        <div>
+                            <button class="btn btn-icon btn-flat-danger delete-skill"><i data-feather="trash"></i></button>
+                            <button class="btn btn-icon btn-flat-success edit-skill"><i data-feather="edit"></i></button>
+                        </div>
+                    </div>
+                    <div class="progress progress-bar-success">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="45" aria-valuemax="100"
+                            style="width: 45%">
+                            45%
+                        </div>
+                    </div>
+                </div> --}}
+            </div>
+        </div>
     </div>
 </div>
 
 {{-- modal section --}}
-<div class="modal fade" id="update-exp-modal" tabindex="-1" aria-labelledby="updateExperienccModalLabel"
+<div class="modal fade" id="update-coding-skill-modal" tabindex="-1" aria-labelledby="updateExperienccModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -82,41 +99,24 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="mt-2 pt-50" id="update-exp-form" method="POST"
-                    action="{{ route('admin.experience-info.update') }}">
+                <form class="mt-2 pt-50" id="update-coding-skill-form" method="POST" action="{{ route('admin.coding-skill.update') }}">
                     @csrf
                     <input type="hidden" name="id" id="update-id">
                     <div class="row">
                         <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="course-name">Designation</label>
-                            <input type="text" name="update_designation" value="" id="update-designation"
+                            <label class="form-label" for="course-name">Skill Name</label>
+                            <input type="text" name="skill_name" value="" id="update-name"
                                 class="form-control" />
                         </div>
                         <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="email">Company Name</label>
-                            <input type="text" class="form-control" value="" id="update-company-name"
-                                name="update_company_name" />
-                        </div>
-                        <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="start-date">Start Date</label>
-                            <input type="text" id="update-start-date" name="update_start_date"
-                                class="date form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
-                        </div>
-                        <div class="col-12 col-sm-6 mb-1">
-                            <label class="form-label" for="end-date">End Date</label>
-                            <input type="text" id="update-end-date" name="update_end_date"
-                                class="date form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
-                        </div>
-                        <div class="col-12 col-sm-12 mb-1">
-                            <label class="form-label" for="course-details">Details</label>
-                            <textarea name="update_exp_details" class="form-control" id="update-exp-details" rows="3"
-                                placeholder="Textarea"></textarea>
+                            <label class="form-label" for="email">Skill Level</label>
+                            <input type="text" class="form-control" value="" id="update-skill-level" name="skill_level" />
                         </div>
 
                         <div class="col-12 text-center">
-                            <button class="btn btn-success w-50" type="button" id="update_exp_btn" onclick="_run(this)"
-                                data-el="fg" data-form="update-exp-form" data-callback="updateExperienceInfoCallback"
-                                data-btnid="update_exp_btn">
+                            <button class="btn btn-success w-50" type="button" id="update_coding_skill_btn" onclick="_run(this)"
+                                data-el="fg" data-form="update-coding-skill-form" data-callback="updateCodingSkillCallback"
+                                data-btnid="update_coding_skill_btn">
                                 <span class="align-middle d-sm-inline-block d-none">Update</span>
                             </button>
                         </div>
@@ -134,59 +134,40 @@
 <script src="{{ asset('admin-assets/app-assets/vendors/js/pickers/pickadate/picker.time.js') }}"></script>
 <script src="{{ asset('admin-assets/app-assets/vendors/js/pickers/pickadate/legacy.js') }}"></script>
 <script src="{{ asset('admin-assets/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ asset('admin-assets/app-assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js') }}"></script>
 @endsection
 
 @section('page-js')
+<script src="{{ asset('admin-assets/app-assets/js/scripts/forms/form-number-input.js') }}"></script>
 <script src="{{ asset('admin-assets/app-assets/js/scripts/forms/form-wizard.js') }}"></script>
 <script src="{{ asset('assets/js/feather.min.js') }}"></script>
 
 <script>
-    // date picker
-    $('.date').flatpickr();
-    // feather icon
-    // feather.replace();
-     // realtime time education info show
-    function realtimeExperienceInfo() {
+    // realtime coding skill show
+    function realtimeCodingSkill() {
         $.ajax({
-            url: "{{ route('admin.experience-info.get') }}",
+            url: "{{ route('admin.coding-skill.get') }}",
             type: "GET",
             success: function(data) {
 
+                console.log(data);
                 // Assuming `data` is an array of education info objects
-                var container = $('.experience-info-block');
+                var container = $('.coding-skill-block');
                 container.empty(); // Clear any previous content
-
                 // Loop through the data and create a new card for each education info object
                 data.forEach(function(info) {
-                    var startDate = new Date(info.start_date);
-                    var startYear = startDate.getFullYear();
-                    if (info.end_date == null) {
-                        var endYear = 'Present';
-                    } else {
-                        var endDate = new Date(info.end_date);
-                        var endYear = endDate.getFullYear();
-                    }
-                    var card = $('<div class="col-12 col-md-4 mb-4 mb-md-0">' +
-                        '<div class="w-100">' +
-                            '<div class="card">' +
-                                '<div class="card-body">' +
-                                    '<div class="d-flex justify-content-between">' +
-                                        '<div>' +
-                                            '<span class="badge bg-light-primary">' + startYear + ' - ' + endYear + '</span>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<button type="button" data-id="' + info.id + '" id="exp_edit_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-success" data-bs-toggle="modal" data-bs-target="#update-exp-modal"><i data-feather="edit"></i></button>' +
-                                            '<button type="button" data-id="' + info.id + '" id="exp_delete_btn" class="btn btn-icon btn-icon rounded-circle btn-flat-danger"><i data-feather="trash-2"></i></button>' +
-                                        '</div>' +
-                                        '</div>' +
-                                    '<i class="cus-feather" data-feather="book-open"></i>' +
-                                    '<h4 class="mt-2 mb-1">' + info.designation + '</h4>' +
-                                    '<p class="card-text">' + info.company_name + '</p>' +
-                                    '<p>' + info.experience_details + '</p>' +
-                                    '</div>' +
-                                '</div>' +
+                    var card = $('<div class="col-12 col-sm-6 mb-1 border-end">' +
+                        '<div class="d-flex justify-content-between mb-1">' +
+                            '<div class="skill-name">' + info.skill_name +'</div>' +
+                            '<div>' +
+                                '<button class="btn btn-icon btn-flat-success edit-skill" data-id="'+ info.id +'" data-bs-toggle="modal" data-bs-target="#update-coding-skill-modal"><i data-feather="edit"></i></button>' +
+                                '<button class="btn btn-icon btn-flat-danger delete-skill" data-id="'+ info.id +'"><i data-feather="trash"></i></button>' +
                             '</div>' +
-                        '</div>');
+                        '</div>' +
+                        '<div class="progress progress-bar-success">' +
+                            '<div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="45" aria-valuemax="100"style="width: ' + info.skill_level +'%">'+ info.skill_level +'%</div>' +
+                        '</div>' +
+                    '</div>');
 
                         container.append(card);
                         feather.replace();
@@ -195,57 +176,53 @@
         });
     }
 
-    realtimeExperienceInfo();
+    realtimeCodingSkill();
+
     // educational info callback
-    function experienceInfoCallback(data) {
+    function codingSkillCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'Experience Info');
-            $('#experience-info-form').trigger('reset');
-            // window.location.reload();
-            realtimeExperienceInfo();
+            notify('success', data.message, 'Coding Skill');
+            $('#coding-skill-form').trigger('reset');
+            realtimeCodingSkill();
         } else {
-            notify('error', data.message, 'Educational Info');
-            $.validator('experience-info-form', data.errors);
+            notify('error', data.message, 'Coding Skill');
+            $.validator('coding-skill-form', data.errors);
         }
     }
 
-    // education edit
-    $(document).on('click', '#exp_edit_btn', function() {
+    // edit coding skill
+    $(document).on('click', '.edit-skill', function() {
         var id = $(this).attr('data-id');
         $.ajax({
-            url: "{{ route('admin.experience-info.edit') }}",
+            url: "{{ route('admin.coding-skill.edit') }}",
             type: "GET",
             data: {
                 id: id
             },
             success: function(data) {
-                // console.log(data);
+                console.log(data);
                 $('#update-id').val(data.id);
-                $('#update-designation').val(data.designation);
-                $('#update-company-name').val(data.company_name);
-                $('#update-start-date').val(data.start_date);
-                $('#update-end-date').val(data.end_date);
-                $('#update-exp-details').val(data.experience_details);
+                $('#update-name').val(data.skill_name);
+                $('#update-skill-level').val(data.skill_level);
             }
         });
-
     });
 
-    // education update callback
-    function updateExperienceInfoCallback(data) {
+    // update coding skill callback
+    function updateCodingSkillCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'Experience Info');
-            $('#update-exp-form').trigger('reset');
-            $('#update-exp-modal').modal('hide');
-            realtimeExperienceInfo();
+            notify('success', data.message, 'Coding Skill');
+            $('#update-coding-skill-modal').modal('hide');
+            $('#update-coding-skill-form').trigger('reset');
+            realtimeCodingSkill();
         } else {
-            notify('error', data.message, 'Experience Info');
-            $.validator('update-exp-form', data.errors);
+            notify('error', data.message, 'Coding Skill');
+            $.validator('update-coding-skill-form', data.errors);
         }
     }
 
-// delete education info
-    $(document).on('click', '#exp_delete_btn', function() {
+    // delete coding skill
+    $(document).on('click', '.delete-skill', function() {
         var id = $(this).attr('data-id');
 
         Swal.fire({
@@ -259,30 +236,26 @@
                 cancelButton: 'btn btn-outline-danger ms-1'
             },
             buttonsStyling: false
-        }).then(function (result) {
+        }).then(function(result) {
             if (result.value) {
                 $.ajax({
-                    url: "{{ route('admin.experience-info.delete') }}",
+                    url: "{{ route('admin.coding-skill.delete') }}",
                     type: "GET",
                     data: {
                         id: id
                     },
                     success: function(data) {
-                        // console.log(data);
                         if (data.status == true) {
-                            notify('success', data.message, 'Educational Info');
-                            realtimeExperienceInfo();
+                            notify('success', data.message, 'Coding Skill');
+                            realtimeCodingSkill();
                         } else {
-                            notify('error', data.message, 'Educational Info');
+                            notify('error', data.message, 'Coding Skill');
                         }
                     }
                 });
             }
         });
     });
-
-
-
 </script>
 
 @endsection

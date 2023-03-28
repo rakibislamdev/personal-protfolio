@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/components.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/dark-layout.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/bordered-layout.css') }}">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/vendors/css/extensions/sweetalert2.min.css') }}">
     <link rel="stylesheet" type="text/css"
         href="{{ asset('admin-assets/app-assets/css/themes/semi-dark-layout.css') }}">
     @yield('theme-css')
@@ -554,7 +554,7 @@
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Awards</span></a>
                 </li> --}}
-                <li class="{{ Request::is('admin/coding-skill' ? 'active' : '') }}"><a class="d-flex align-items-center" href="{{ route('admin.coding-skill') }}"><i
+                <li class="{{ Request::is('admin/coding-skill') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.coding-skill') }}"><i
                             data-feather="grid"></i><span class="menu-title text-truncate" data-i18n="Kanban">Coding
                             Skills</span></a>
                 </li>
