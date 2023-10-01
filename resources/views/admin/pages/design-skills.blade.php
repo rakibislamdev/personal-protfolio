@@ -153,11 +153,11 @@
     // educational info callback
     function designSkillCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'design Skill');
+            notify('success', data.message, 'Design Skill');
             $('#design-skill-form').trigger('reset');
             realtimeDesignSkill();
         } else {
-            notify('error', data.message, 'design Skill');
+            notify('error', data.message, 'Design Skill');
             $.validator('design-skill-form', data.errors);
         }
     }
@@ -183,12 +183,12 @@
     // update design skill callback
     function updateDesignSkillCallback(data) {
         if (data.status == true) {
-            notify('success', data.message, 'design Skill');
+            notify('success', data.message, 'Design Skill');
             $('#update-design-skill-modal').modal('hide');
             $('#update-design-skill-form').trigger('reset');
             realtimeDesignSkill();
         } else {
-            notify('error', data.message, 'design Skill');
+            notify('error', data.message, 'Design Skill');
             $.validator('update-design-skill-form', data.errors);
         }
     }
@@ -218,10 +218,10 @@
                     },
                     success: function(data) {
                         if (data.status == true) {
-                            notify('success', data.message, 'design Skill');
-                            realtimedesignSkill();
+                            notify('success', data.message, 'Design Skill');
+                            realtimeDesignSkill();
                         } else {
-                            notify('error', data.message, 'design Skill');
+                            notify('error', data.message, 'Design Skill');
                         }
                     }
                 });

@@ -117,7 +117,7 @@ class DesignSkillController extends Controller
         if ($request->ajax()) {
             $delete = DesignSkill::where('id', $request->id)->delete();
             if ($delete) {
-                return Response::json(['status' => true, 'message' => 'Coding skill deleted successfully.']);
+                return Response::json(['status' => true, 'message' => 'Design skill deleted successfully.']);
             } else {
                 return Response::json(['status' => false, 'message' => 'Something went wrong.']);
             }
