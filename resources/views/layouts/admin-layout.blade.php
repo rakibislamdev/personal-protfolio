@@ -33,7 +33,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/components.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/dark-layout.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/css/themes/bordered-layout.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/app-assets/vendors/css/extensions/sweetalert2.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('admin-assets/app-assets/vendors/css/extensions/sweetalert2.min.css') }}">
     <link rel="stylesheet" type="text/css"
         href="{{ asset('admin-assets/app-assets/css/themes/semi-dark-layout.css') }}">
     @yield('theme-css')
@@ -57,7 +58,7 @@
             color: red;
         }
 
-        .cus-feather{
+        .cus-feather {
             width: 28px;
             height: 28px;
         }
@@ -538,15 +539,18 @@
                 <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i
                         data-feather="more-horizontal"></i>
                 </li>
-                <li class="{{ Request::is('admin/personal-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.personal-info') }}"><i
+                <li class="{{ Request::is('admin/personal-info') ? 'active' : '' }}"><a
+                        class="d-flex align-items-center" href="{{ route('admin.personal-info') }}"><i
                             data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Personal
                             Information</span></a>
                 </li>
-                <li class="{{ Request::is('admin/education-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.education-info') }}"><i
+                <li class="{{ Request::is('admin/education-info') ? 'active' : '' }}"><a
+                        class="d-flex align-items-center" href="{{ route('admin.education-info') }}"><i
                             data-feather="message-square"></i><span class="menu-title text-truncate"
                             data-i18n="Chat">Education</span></a>
                 </li>
-                <li class="{{ Request::is('admin/experience-info') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.experience-info') }}"><i
+                <li class="{{ Request::is('admin/experience-info') ? 'active' : '' }}"><a
+                        class="d-flex align-items-center" href="{{ route('admin.experience-info') }}"><i
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Experience</span></a>
                 </li>
@@ -554,13 +558,14 @@
                             data-feather="calendar"></i><span class="menu-title text-truncate"
                             data-i18n="Calendar">Awards</span></a>
                 </li> --}}
-                <li class="{{ Request::is('admin/coding-skill') ? 'active' : '' }}"><a class="d-flex align-items-center" href="{{ route('admin.coding-skill') }}"><i
-                            data-feather="grid"></i><span class="menu-title text-truncate" data-i18n="Kanban">Coding
+                <li class="{{ Request::is('admin/coding-skill') ? 'active' : '' }}"><a class="d-flex align-items-center"
+                        href="{{ route('admin.coding-skill') }}"><i data-feather="grid"></i><span
+                            class="menu-title text-truncate" data-i18n="Kanban">Coding
                             Skills</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="app-file-manager.html"><i
-                            data-feather="save"></i><span class="menu-title text-truncate"
-                            data-i18n="File Manager">Design Skills</span></a>
+                <li class="{{ Request::is('admin/design-skill') ? 'active' : '' }}"><a class="d-flex align-items-center"
+                        href="{{ route('admin.design-skill') }}"><i data-feather="save"></i><span
+                            class="menu-title text-truncate" data-i18n="Kanban">Design Skills</span></a>
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="app-file-manager.html"><i
                             data-feather="save"></i><span class="menu-title text-truncate"

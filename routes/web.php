@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CodingSkillController;
+use App\Http\Controllers\DesignSkillController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InformationController;
@@ -57,3 +58,12 @@ Route::get('admin/get/coding-skill', [CodingSkillController::class, 'getCodingSk
 Route::get('admin/edit/coding-skill', [CodingSkillController::class, 'edit'])->name('admin.coding-skill.edit');
 Route::post('admin/update/coding-skill', [CodingSkillController::class, 'update'])->name('admin.coding-skill.update');
 Route::get('admin/delete/coding-skill', [CodingSkillController::class, 'destroy'])->name('admin.coding-skill.delete');
+
+// Design skill route
+
+Route::get('/admin/design-skill', [DesignSkillController::class, 'index'])->name('admin.design-skill');
+Route::post('admin/store/design-skill', [DesignSkillController::class, 'store'])->name('admin.design-skill.store');
+Route::get('admin/get/design-skill', [DesignSkillController::class, 'getDesignSkill'])->name('admin.design-skill.get');
+Route::get('admin/edit/design-skill', [DesignSkillController::class, 'edit'])->name('admin.design-skill.edit');
+Route::post('admin/update/design-skill', [DesignSkillController::class, 'update'])->name('admin.design-skill.update');
+Route::get('admin/delete/design-skill', [DesignSkillController::class, 'destroy'])->name('admin.design-skill.delete');
